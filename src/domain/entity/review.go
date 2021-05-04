@@ -2,9 +2,9 @@ package entity
 
 import "time"
 
-type BookReviews []*BookReview
+type Reviews []*Review
 
-type BookReview struct {
+type Review struct {
 	ID          int
 	ReviewerID  int
 	Title       string
