@@ -2,7 +2,10 @@ package mysql
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
+	"log"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -11,10 +14,24 @@ type mysqlHandler struct {
 	db *sql.DB
 }
 
-func NewMySQLHandler(db *sql.DB) datastore.MySQLHandler {
+func NewMySQLHandler(db *sql.DB) datastore.DBHandler {
 	return &mysqlHandler{
 		db: db,
 	}
+}
+
+func GetMySQLConnection() *sql.DB {
+	conn, err := sql.Open("mysql",
+		fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true",
+			os.Getenv("DB_USER"),
+			os.Getenv("DB_PASS"),
+			os.Getenv("DB_HOST"),
+			os.Getenv("DB_NAME"),
+		))
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return conn
 }
 
 func (m *mysqlHandler) Exec(query string, args ...interface{}) (datastore.Result, error) {
