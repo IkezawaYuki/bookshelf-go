@@ -1,6 +1,7 @@
 package datastore
 
 type RedisHandler interface {
-	Get()
-	Set()
+	Get(key string) (string, error)
+	Set(key string, value interface{}) (string, error)
+	Close() error
 }
