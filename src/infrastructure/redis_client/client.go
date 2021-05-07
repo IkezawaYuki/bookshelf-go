@@ -4,14 +4,23 @@ import (
 	"context"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
 	"github.com/go-redis/redis/v8"
+	"os"
 )
 
 type redisClient struct {
-	redis *redis.Conn
+	redis *redis.Client
 }
 
-func NewRedisClient(c *redis.Conn) datastore.RedisHandler {
+func NewRedisClient(c *redis.Client) datastore.RedisHandler {
 	return &redisClient{redis: c}
+}
+
+func GetRedisConnection() *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("REDIS_ADDR"),
+		Password: os.Getenv("REDIS_PASS"),
+		DB:       0, // use default DB
+	})
 }
 
 func (c *redisClient) Get(key string) (string, error) {
@@ -24,4 +33,8 @@ func (c *redisClient) Set(key string, value interface{}) (string, error) {
 
 func (c *redisClient) Close() error {
 	return c.redis.Close()
+}
+
+func (c *redisClient) Delete(key string) error {
+	return c.redis.Del(context.Background(), key).Err()
 }
