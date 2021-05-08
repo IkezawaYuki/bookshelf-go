@@ -1,6 +1,6 @@
 package aggregate
 
+type BookDfs []BookDf
 
-type BookDf struct{
-	
+type BookDf struct {
 }
