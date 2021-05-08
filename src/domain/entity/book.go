@@ -11,6 +11,7 @@ type Book struct {
 	Author      string
 	DateOfIssue time.Time
 	Price       float64
+	Model
 }
 
 func (b *Book) TaxIncludedPrice() int {

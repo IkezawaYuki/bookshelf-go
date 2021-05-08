@@ -12,4 +12,5 @@ type User struct {
 	Email      string
 	Occupation string
 	Address    string
+	Model
 }

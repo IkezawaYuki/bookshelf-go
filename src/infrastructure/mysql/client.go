@@ -38,7 +38,7 @@ func (m *mysqlHandler) Exec(query string, args ...interface{}) (datastore.Result
 	return m.db.Exec(query, args...)
 }
 
-func (m *mysqlHandler) Query(query string, args ...interface{}) (datastore.Row, error) {
+func (m *mysqlHandler) Query(query string, args ...interface{}) (datastore.Rows, error) {
 	return m.db.Query(query, args...)
 }
 

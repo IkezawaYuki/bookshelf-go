@@ -6,8 +6,9 @@ type Reviews []*Review
 
 type Review struct {
 	ID          int
-	ReviewerID  int
+	BookID      int
 	Title       string
 	Content     string
 	ReadingDate time.Time
+	Model
 }
