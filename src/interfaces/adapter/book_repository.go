@@ -15,7 +15,14 @@ type bookRepository struct {
 }
 
 func (b *bookRepository) getFindAllBookQuery() string {
-	return ""
+	return `SELECT 
+id,
+name,
+publisher,
+author,
+date_of_issue,
+price
+FROM book WHERE delete_flag = 0`
 }
 
 func (b *bookRepository) FindAllBook() (entity.Books, error) {
@@ -29,27 +36,114 @@ func (b *bookRepository) FindAllBook() (entity.Books, error) {
 		_ = rows.Close()
 	}()
 	for rows.Next() {
-		book := new(entity.Book)
-		if err := rows.Scan(); err != nil {
+		book := entity.Book{}
+		if err := rows.Scan(
+			&book.ID,
+			&book.Name,
+			&book.Publisher,
+			&book.Author,
+			&book.DateOfIssue,
+			&book.Price,
+		); err != nil {
 			return nil, err
 		}
-		result = append(result, book)
+		result = append(result, &book)
 	}
 	return result, nil
 }
 
-func (b *bookRepository) FindBookByID(id int) (entity.Book, error) {
-	panic("implement me")
+func (b *bookRepository) getFindBookByIDQuery() string {
+	return `SELECT 
+id,
+name,
+publisher,
+author,
+date_of_issue,
+price
+FROM book WHERE id = ? AND delete_flag = 0`
 }
 
-func (b *bookRepository) CreateBook(book entity.Book) error {
-	panic("implement me")
+func (b *bookRepository) FindBookByID(id int) (book entity.Book, err error) {
+	query := b.getFindBookByIDQuery()
+	row := b.handler.QueryRow(query, id)
+	if err = row.Scan(
+		&book.ID,
+		&book.Name,
+		&book.Publisher,
+		&book.Author,
+		&book.DateOfIssue,
+		&book.Price,
+	); err != nil {
+		return
+	}
+	return
 }
 
-func (b *bookRepository) UpdateBook(book entity.Book) error {
-	panic("implement me")
+func (b *bookRepository) getCreateBookQuery() string {
+	return `INSERT INTO book(name, publisher, author, date_of_issue, price, create_user_id) 
+VALUES (?, ?, ?, ?, ?, ?)`
 }
 
-func (b *bookRepository) DeleteBookByID(id int) error {
-	panic("implement me")
+func (b *bookRepository) CreateBook(userID int, book entity.Book) error {
+	query := b.getCreateBookQuery()
+	_, err := b.handler.Exec(query,
+		book.Name,
+		book.Publisher,
+		book.Author,
+		book.DateOfIssue,
+		book.Price,
+		userID,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (b *bookRepository) getUpdateBookQuery() string {
+	return `UPDATE book
+SET name = ?, 
+publisher = ?, 
+author = ?, 
+date_of_issue = ?, 
+price = ?, 
+update_user_id = ?, 
+WHERE id = ?`
+}
+
+func (b *bookRepository) UpdateBook(userID int, book entity.Book) error {
+	query := b.getUpdateBookQuery()
+	_, err := b.handler.Exec(query,
+		book.Name,
+		book.Publisher,
+		book.Author,
+		book.DateOfIssue,
+		book.Price,
+		userID,
+		book.ID,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (b *bookRepository) getDeleteBookByIDQuery() string {
+	return `UPDATE book
+SET delete_user_id = ?,
+delete_date = now(),
+delete_flag = 1
+WHERE id = ?`
+}
+
+func (b *bookRepository) DeleteBookByID(userID int, id int) error {
+	query := b.getDeleteBookByIDQuery()
+	_, err := b.handler.Exec(query,
+		userID,
+		id,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
 }
