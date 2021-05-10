@@ -5,12 +5,12 @@ import "time"
 type Users []*User
 
 type User struct {
-	ID         int
-	Name       string
-	Gender     int
-	BirthDate  time.Time
-	Email      string
-	Occupation string
-	Address    string
+	ID             int
+	Name           string
+	Gender         int
+	BirthDate      time.Time
+	Email          string
+	OccupationCode string
+	AddressCode    string
 	Model
 }

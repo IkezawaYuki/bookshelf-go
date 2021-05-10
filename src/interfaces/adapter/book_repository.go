@@ -6,7 +6,7 @@ import (
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
 )
 
-func NewRepository(handler datastore.DBHandler) repository.BookRepository {
+func NewBookRepository(handler datastore.DBHandler) repository.BookRepository {
 	return &bookRepository{handler: handler}
 }
 
@@ -22,7 +22,7 @@ publisher,
 author,
 date_of_issue,
 price
-FROM book WHERE delete_flag = 0`
+FROM books WHERE delete_flag = 0`
 }
 
 func (b *bookRepository) FindAllBook() (entity.Books, error) {
@@ -60,7 +60,7 @@ publisher,
 author,
 date_of_issue,
 price
-FROM book WHERE id = ? AND delete_flag = 0`
+FROM books WHERE id = ? AND delete_flag = 0`
 }
 
 func (b *bookRepository) FindBookByID(id int) (book entity.Book, err error) {
@@ -80,7 +80,7 @@ func (b *bookRepository) FindBookByID(id int) (book entity.Book, err error) {
 }
 
 func (b *bookRepository) getCreateBookQuery() string {
-	return `INSERT INTO book(name, publisher, author, date_of_issue, price, create_user_id) 
+	return `INSERT INTO books(name, publisher, author, date_of_issue, price, create_user_id) 
 VALUES (?, ?, ?, ?, ?, ?)`
 }
 
@@ -101,7 +101,7 @@ func (b *bookRepository) CreateBook(userID int, book entity.Book) error {
 }
 
 func (b *bookRepository) getUpdateBookQuery() string {
-	return `UPDATE book
+	return `UPDATE books
 SET name = ?, 
 publisher = ?, 
 author = ?, 
@@ -129,7 +129,7 @@ func (b *bookRepository) UpdateBook(userID int, book entity.Book) error {
 }
 
 func (b *bookRepository) getDeleteBookByIDQuery() string {
-	return `UPDATE book
+	return `UPDATE books
 SET delete_user_id = ?,
 delete_date = now(),
 delete_flag = 1
