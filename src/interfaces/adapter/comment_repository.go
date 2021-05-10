@@ -15,7 +15,7 @@ type commentRepository struct {
 }
 
 func (b *commentRepository) getFindAllCommentQuery() string {
-	return ``
+	return `select id, review_id, content from comments where delete_flag = 0`
 }
 
 func (b *commentRepository) FindAllComment() (entity.Comments, error) {
@@ -43,30 +43,27 @@ func (b *commentRepository) FindAllComment() (entity.Comments, error) {
 }
 
 func (b *commentRepository) getFindCommentByIDQuery() string {
-	return ``
+	return `select id, review_id, content from comments where id = ? and delete_flag = 0`
 }
 
 func (b *commentRepository) FindCommentByID(id int) (comment entity.Comment, err error) {
 	query := b.getFindCommentByIDQuery()
 	row := b.handler.QueryRow(query, id)
-	if err = row.Scan(
+	err = row.Scan(
 		&comment.ID,
 		&comment.ReviewID,
 		&comment.Content,
-	); err != nil {
-		return
-	}
+	)
 	return
 }
 
 func (b *commentRepository) getCreateCommentQuery() string {
-	return ``
+	return `INSERT INTO comments (review_id, content, create_user_id) VALUES (?, ?, ?);`
 }
 
 func (b *commentRepository) CreateComment(userID int, comment entity.Comment) error {
 	query := b.getCreateCommentQuery()
 	_, err := b.handler.Exec(query,
-		comment.ID,
 		comment.ReviewID,
 		comment.Content,
 		userID,
@@ -78,13 +75,16 @@ func (b *commentRepository) CreateComment(userID int, comment entity.Comment) er
 }
 
 func (b *commentRepository) getUpdateCommentQuery() string {
-	return ``
+	return `UPDATE comments SET 
+review_id = ?,
+content = ?,
+create_user_id = ?
+where id = ?`
 }
 
 func (b *commentRepository) UpdateComment(userID int, comment entity.Comment) error {
 	query := b.getUpdateCommentQuery()
 	_, err := b.handler.Exec(query,
-		comment.ID,
 		comment.ReviewID,
 		comment.Content,
 		userID,
@@ -97,7 +97,11 @@ func (b *commentRepository) UpdateComment(userID int, comment entity.Comment) er
 }
 
 func (b *commentRepository) getDeleteCommentByIDQuery() string {
-	return ``
+	return `UPDATE comments
+SET delete_user_id = ?,
+delete_date = now(),
+delete_flag = 1
+WHERE id = ?`
 }
 
 func (b *commentRepository) DeleteCommentByID(userID int, id int) error {
