@@ -34,8 +34,10 @@ func buildBookShelfController(ctn di.Container) (interface{}, error) {
 	handler := mysql_client.NewMySQLHandler(conn)
 	bookRepo := adapter.NewBookRepository(handler)
 	commentRepo := adapter.NewCommentRepository(handler)
+	reviewRepo := adapter.NewReviewRepository(handler)
 	fmt.Println(bookRepo)
 	fmt.Println(commentRepo)
+	fmt.Println(reviewRepo)
 
 	panic("implement me")
 }

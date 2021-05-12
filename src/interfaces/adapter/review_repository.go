@@ -93,6 +93,7 @@ func (r *reviewRepository) UpdateReview(userID int, review entity.Review) error 
 		review.Content,
 		review.ReadingDate,
 		userID,
+		review.ID,
 	)
 	if err != nil {
 		return err
