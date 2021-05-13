@@ -64,8 +64,8 @@ func (r *shelfRepository) getCreateShelfQuery() string {
 func (r *shelfRepository) CreateShelf(userID int, shelf entity.Shelf) error {
 	query := r.getCreateShelfQuery()
 	_, err := r.handler.Exec(query,
-		&shelf.OwnerID,
-		&shelf.Name,
+		shelf.OwnerID,
+		shelf.Name,
 		userID,
 	)
 	if err != nil {
