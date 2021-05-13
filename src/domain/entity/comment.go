@@ -6,4 +6,5 @@ type Comment struct {
 	ID       int
 	ReviewID int
 	Content  string
+	Model
 }

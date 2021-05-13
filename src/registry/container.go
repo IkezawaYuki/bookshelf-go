@@ -1,6 +1,11 @@
 package registry
 
-import "github.com/sarulabs/di"
+import (
+	"fmt"
+	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/mysql_client"
+	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/adapter"
+	"github.com/sarulabs/di"
+)
 
 type Container struct {
 	ctn di.Container
@@ -25,5 +30,14 @@ func NewContainer() (*Container, error) {
 }
 
 func buildBookShelfController(ctn di.Container) (interface{}, error) {
+	conn := mysql_client.GetMySQLConnection()
+	handler := mysql_client.NewMySQLHandler(conn)
+	bookRepo := adapter.NewBookRepository(handler)
+	commentRepo := adapter.NewCommentRepository(handler)
+	reviewRepo := adapter.NewReviewRepository(handler)
+	fmt.Println(bookRepo)
+	fmt.Println(commentRepo)
+	fmt.Println(reviewRepo)
+
 	panic("implement me")
 }
