@@ -35,9 +35,8 @@ func buildBookShelfController(ctn di.Container) (interface{}, error) {
 	bookRepo := adapter.NewBookRepository(handler)
 	commentRepo := adapter.NewCommentRepository(handler)
 	reviewRepo := adapter.NewReviewRepository(handler)
-	fmt.Println(bookRepo)
-	fmt.Println(commentRepo)
-	fmt.Println(reviewRepo)
+	shelfRepo := adapter.NewShelfRepository(handler)
+	userRepo := adapter.NewUserRepository(handler)
 
 	panic("implement me")
 }
