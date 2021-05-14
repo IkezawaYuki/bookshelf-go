@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/mysql_client"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/adapter"
+	"github.com/IkezawaYuki/bookshelf-go/src/usecase/interactor"
 	"github.com/sarulabs/di"
 )
 
@@ -37,6 +38,13 @@ func buildBookShelfController(ctn di.Container) (interface{}, error) {
 	reviewRepo := adapter.NewReviewRepository(handler)
 	shelfRepo := adapter.NewShelfRepository(handler)
 	userRepo := adapter.NewUserRepository(handler)
-
-	panic("implement me")
+	itr := interactor.NewBookshelfInteractor(
+		bookRepo,
+		commentRepo,
+		reviewRepo,
+		shelfRepo,
+		userRepo,
+	)
+	fmt.Println(itr)
+	panic("")
 }
