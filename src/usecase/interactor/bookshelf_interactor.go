@@ -35,31 +35,31 @@ func (b *bookshelfInteractor) FindAllBook() (entity.Books, error) {
 }
 
 func (b *bookshelfInteractor) FindBookByID(id int) (entity.Book, error) {
-	panic("implement me")
+	return b.bookRepo.FindBookByID(id)
 }
 
 func (b *bookshelfInteractor) CreateBook(userID int, book entity.Book) error {
-	panic("implement me")
+	return b.bookRepo.CreateBook(userID, book)
 }
 
 func (b *bookshelfInteractor) UpdateBook(userID int, book entity.Book) error {
-	panic("implement me")
+	return b.bookRepo.UpdateBook(userID, book)
 }
 
 func (b *bookshelfInteractor) DeleteBookByID(userID int, id int) error {
-	panic("implement me")
+	return b.bookRepo.DeleteBookByID(userID, id)
 }
 
 func (b *bookshelfInteractor) FindAllComment() (entity.Comments, error) {
-	panic("implement me")
+	return b.commentRepo.FindAllComment()
 }
 
 func (b *bookshelfInteractor) FindCommentByID(id int) (entity.Comment, error) {
-	panic("implement me")
+	return b.commentRepo.FindCommentByID(id)
 }
 
 func (b *bookshelfInteractor) CreateComment(userID int, book entity.Comment) error {
-	panic("implement me")
+	return b.commentRepo.CreateComment(userID, book)
 }
 
 func (b *bookshelfInteractor) UpdateComment(userID int, book entity.Comment) error {

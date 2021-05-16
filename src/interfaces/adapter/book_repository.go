@@ -84,9 +84,9 @@ func (b *bookRepository) getCreateBookQuery() string {
 VALUES (?, ?, ?, ?, ?, ?)`
 }
 
-func (b *bookRepository) CreateBook(userID int, book entity.Book) error {
+func (b *bookRepository) CreateBook(userID int, book entity.Book) (insBook entity.Book, err error) {
 	query := b.getCreateBookQuery()
-	_, err := b.handler.Exec(query,
+	result, err := b.handler.Exec(query,
 		book.Name,
 		book.Publisher,
 		book.Author,
@@ -95,9 +95,12 @@ func (b *bookRepository) CreateBook(userID int, book entity.Book) error {
 		userID,
 	)
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	insBook = book
+	insID, _ := result.LastInsertId()
+	insBook.ID = int(insID)
+	return
 }
 
 func (b *bookRepository) getUpdateBookQuery() string {
