@@ -61,17 +61,23 @@ func (b *commentRepository) getCreateCommentQuery() string {
 	return `INSERT INTO comments (review_id, content, create_user_id) VALUES (?, ?, ?);`
 }
 
-func (b *commentRepository) CreateComment(userID int, comment entity.Comment) error {
+func (b *commentRepository) CreateComment(userID int, comment entity.Comment) (insComment entity.Comment, err error) {
 	query := b.getCreateCommentQuery()
-	_, err := b.handler.Exec(query,
+	result, err := b.handler.Exec(query,
 		comment.ReviewID,
 		comment.Content,
 		userID,
 	)
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	insComment = comment
+	insID, err := result.LastInsertId()
+	if err != nil {
+		return
+	}
+	insComment.ID = int(insID)
+	return
 }
 
 func (b *commentRepository) getUpdateCommentQuery() string {

@@ -63,18 +63,24 @@ func (r *reviewRepository) getCreateReviewQuery() string {
 	return `INSERT INTO reviews (book_id, content, reading_date, create_user_id) VALUES (?, ?, ?, ?)`
 }
 
-func (r *reviewRepository) CreateReview(userID int, review entity.Review) error {
+func (r *reviewRepository) CreateReview(userID int, review entity.Review) (insReview entity.Review, err error) {
 	query := r.getCreateReviewQuery()
-	_, err := r.handler.Exec(query,
+	result, err := r.handler.Exec(query,
 		review.BookID,
 		review.Content,
 		review.ReadingDate,
 		userID,
 	)
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	insReview = review
+	insID, err := result.LastInsertId()
+	if err != nil {
+		return
+	}
+	insReview.ID = int(insID)
+	return insReview, nil
 }
 
 func (r *reviewRepository) getUpdateReviewQuery() string {

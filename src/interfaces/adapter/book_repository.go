@@ -98,7 +98,10 @@ func (b *bookRepository) CreateBook(userID int, book entity.Book) (insBook entit
 		return
 	}
 	insBook = book
-	insID, _ := result.LastInsertId()
+	insID, err := result.LastInsertId()
+	if err != nil {
+		return
+	}
 	insBook.ID = int(insID)
 	return
 }
