@@ -126,3 +126,11 @@ func (r *reviewRepository) DeleteReviewByID(userID int, id int) error {
 	}
 	return nil
 }
+
+func (r *reviewRepository) getFindByBookIDQuery() string {
+
+}
+
+func (r *reviewRepository) FindByBookID(id int) (entity.Reviews, error) {
+
+}

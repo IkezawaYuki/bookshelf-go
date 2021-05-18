@@ -8,4 +8,5 @@ type BookRepository interface {
 	CreateBook(userID int, book entity.Book) (entity.Book, error)
 	UpdateBook(userID int, book entity.Book) error
 	DeleteBookByID(userID int, id int) error
+	FindByName(name string) (entity.Books, error)
 }
