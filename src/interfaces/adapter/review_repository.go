@@ -128,9 +128,36 @@ func (r *reviewRepository) DeleteReviewByID(userID int, id int) error {
 }
 
 func (r *reviewRepository) getFindByBookIDQuery() string {
-
+	return `select 
+id,
+book_id,
+content,
+reading_date
+from reviews
+where book_id = ?`
 }
 
 func (r *reviewRepository) FindByBookID(id int) (entity.Reviews, error) {
-
+	result := make(entity.Reviews, 0)
+	query := r.getFindByBookIDQuery()
+	rows, err := r.handler.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = rows.Close()
+	}()
+	for rows.Next() {
+		review := entity.Review{}
+		if err := rows.Scan(
+			&review.ID,
+			&review.BookID,
+			&review.Content,
+			&review.ReadingDate,
+		); err != nil {
+			return nil, err
+		}
+		result = append(result, &review)
+	}
+	return result, nil
 }
