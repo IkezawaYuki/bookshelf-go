@@ -8,5 +8,5 @@ type ReviewRepository interface {
 	CreateReview(userID int, review entity.Review) (entity.Review, error)
 	UpdateReview(userID int, review entity.Review) error
 	DeleteReviewByID(userID int, id int) error
-	FindByBookID(id int) (entity.Reviews, error)
+	FindReviewByBookID(id int) (entity.Reviews, error)
 }

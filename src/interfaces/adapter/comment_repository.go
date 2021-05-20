@@ -121,3 +121,31 @@ func (b *commentRepository) DeleteCommentByID(userID int, id int) error {
 	}
 	return nil
 }
+
+func (b *commentRepository) getFindCommentByReviewID() string {
+	return `select id, review_id, content from comments where delete_flag = 0 and review_id = ?`
+}
+
+func (b *commentRepository) FindCommentByReviewID(reviewID int) (entity.Comments, error) {
+	result := make(entity.Comments, 0)
+	query := b.getFindCommentByReviewID()
+	rows, err := b.handler.Query(query, reviewID)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = rows.Close()
+	}()
+	for rows.Next() {
+		comment := entity.Comment{}
+		if err := rows.Scan(
+			&comment.ID,
+			&comment.ReviewID,
+			&comment.Content,
+		); err != nil {
+			return nil, err
+		}
+		result = append(result, &comment)
+	}
+	return result, nil
+}

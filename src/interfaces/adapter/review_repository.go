@@ -137,7 +137,7 @@ from reviews
 where book_id = ?`
 }
 
-func (r *reviewRepository) FindByBookID(id int) (entity.Reviews, error) {
+func (r *reviewRepository) FindReviewByBookID(id int) (entity.Reviews, error) {
 	result := make(entity.Reviews, 0)
 	query := r.getFindByBookIDQuery()
 	rows, err := r.handler.Query(query, id)
