@@ -38,7 +38,7 @@ func (b *bookshelfInteractor) FindBookByID(id int) (entity.Book, error) {
 	return b.bookRepo.FindBookByID(id)
 }
 
-func (b *bookshelfInteractor) CreateBook(userID int, book entity.Book) error {
+func (b *bookshelfInteractor) CreateBook(userID int, book entity.Book) (entity.Book, error) {
 	return b.bookRepo.CreateBook(userID, book)
 }
 
@@ -58,20 +58,20 @@ func (b *bookshelfInteractor) FindCommentByID(id int) (entity.Comment, error) {
 	return b.commentRepo.FindCommentByID(id)
 }
 
-func (b *bookshelfInteractor) CreateComment(userID int, book entity.Comment) error {
+func (b *bookshelfInteractor) CreateComment(userID int, book entity.Comment) (entity.Comment, error) {
 	return b.commentRepo.CreateComment(userID, book)
 }
 
 func (b *bookshelfInteractor) UpdateComment(userID int, book entity.Comment) error {
-	panic("implement me")
+	return b.commentRepo.UpdateComment(userID, book)
 }
 
 func (b *bookshelfInteractor) DeleteCommentByID(userID int, id int) error {
-	panic("implement me")
+	return b.commentRepo.DeleteCommentByID(userID, id)
 }
 
 func (b *bookshelfInteractor) FindAllReview() (entity.Reviews, error) {
-	panic("implement me")
+	return b.reviewRepo.FindAllReview()
 }
 
 func (b *bookshelfInteractor) FindReviewByID(id int) (entity.Review, error) {
