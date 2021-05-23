@@ -75,57 +75,57 @@ func (b *bookshelfInteractor) FindAllReview() (entity.Reviews, error) {
 }
 
 func (b *bookshelfInteractor) FindReviewByID(id int) (entity.Review, error) {
-	panic("implement me")
+	return b.reviewRepo.FindReviewByID(id)
 }
 
-func (b *bookshelfInteractor) CreateReview(userID int, review entity.Review) error {
-	panic("implement me")
+func (b *bookshelfInteractor) CreateReview(userID int, review entity.Review) (entity.Review, error) {
+	return b.reviewRepo.CreateReview(userID, review)
 }
 
 func (b *bookshelfInteractor) UpdateReview(userID int, review entity.Review) error {
-	panic("implement me")
+	return b.reviewRepo.UpdateReview(userID, review)
 }
 
 func (b *bookshelfInteractor) DeleteReviewByID(userID int, id int) error {
-	panic("implement me")
+	return b.reviewRepo.DeleteReviewByID(userID, id)
 }
 
 func (b *bookshelfInteractor) FindAllShelf() (entity.Shelves, error) {
-	panic("implement me")
+	return b.shelfRepo.FindAllShelf()
 }
 
 func (b *bookshelfInteractor) FindShelfByID(id int) (entity.Shelf, error) {
-	panic("implement me")
+	return b.shelfRepo.FindShelfByID(id)
 }
 
-func (b *bookshelfInteractor) CreateShelf(userID int, shelf entity.Shelf) error {
-	panic("implement me")
+func (b *bookshelfInteractor) CreateShelf(userID int, shelf entity.Shelf) (entity.Shelf, error) {
+	return b.shelfRepo.CreateShelf(userID, shelf)
 }
 
 func (b *bookshelfInteractor) UpdateShelf(userID int, shelf entity.Shelf) error {
-	panic("implement me")
+	return b.shelfRepo.UpdateShelf(userID, shelf)
 }
 
 func (b *bookshelfInteractor) DeleteShelfByID(userID int, id int) error {
-	panic("implement me")
+	return b.shelfRepo.DeleteShelfByID(userID, id)
 }
 
 func (b *bookshelfInteractor) FindAllUser() (entity.Users, error) {
-	panic("implement me")
+	return b.userRepo.FindAllUser()
 }
 
 func (b *bookshelfInteractor) FindUserByID(id int) (entity.User, error) {
-	panic("implement me")
+	return b.userRepo.FindUserByID(id)
 }
 
-func (b *bookshelfInteractor) CreateUser(userID int, user entity.User) error {
-	panic("implement me")
+func (b *bookshelfInteractor) CreateUser(userID int, user entity.User) (entity.User, error) {
+	return b.userRepo.CreateUser(userID, user)
 }
 
 func (b *bookshelfInteractor) UpdateUser(userID int, user entity.User) error {
-	panic("implement me")
+	return b.userRepo.UpdateUser(userID, user)
 }
 
 func (b *bookshelfInteractor) DeleteUserByID(userID int, id int) error {
-	panic("implement me")
+	return b.userRepo.DeleteUserByID(userID, id)
 }

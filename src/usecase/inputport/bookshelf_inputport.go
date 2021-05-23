@@ -15,17 +15,17 @@ type BookShelfInputPort interface {
 	DeleteCommentByID(userID int, id int) error
 	FindAllReview() (entity.Reviews, error)
 	FindReviewByID(id int) (entity.Review, error)
-	CreateReview(userID int, review entity.Review) error
+	CreateReview(userID int, review entity.Review) (entity.Review, error)
 	UpdateReview(userID int, review entity.Review) error
 	DeleteReviewByID(userID int, id int) error
 	FindAllShelf() (entity.Shelves, error)
 	FindShelfByID(id int) (entity.Shelf, error)
-	CreateShelf(userID int, shelf entity.Shelf) error
+	CreateShelf(userID int, shelf entity.Shelf) (entity.Shelf, error)
 	UpdateShelf(userID int, shelf entity.Shelf) error
 	DeleteShelfByID(userID int, id int) error
 	FindAllUser() (entity.Users, error)
 	FindUserByID(id int) (entity.User, error)
-	CreateUser(userID int, user entity.User) error
+	CreateUser(userID int, user entity.User) (entity.User, error)
 	UpdateUser(userID int, user entity.User) error
 	DeleteUserByID(userID int, id int) error
 }
