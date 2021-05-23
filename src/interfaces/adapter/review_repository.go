@@ -63,18 +63,24 @@ func (r *reviewRepository) getCreateReviewQuery() string {
 	return `INSERT INTO reviews (book_id, content, reading_date, create_user_id) VALUES (?, ?, ?, ?)`
 }
 
-func (r *reviewRepository) CreateReview(userID int, review entity.Review) error {
+func (r *reviewRepository) CreateReview(userID int, review entity.Review) (insReview entity.Review, err error) {
 	query := r.getCreateReviewQuery()
-	_, err := r.handler.Exec(query,
+	result, err := r.handler.Exec(query,
 		review.BookID,
 		review.Content,
 		review.ReadingDate,
 		userID,
 	)
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	insReview = review
+	insID, err := result.LastInsertId()
+	if err != nil {
+		return
+	}
+	insReview.ID = int(insID)
+	return insReview, nil
 }
 
 func (r *reviewRepository) getUpdateReviewQuery() string {
@@ -119,4 +125,39 @@ func (r *reviewRepository) DeleteReviewByID(userID int, id int) error {
 		return err
 	}
 	return nil
+}
+
+func (r *reviewRepository) getFindByBookIDQuery() string {
+	return `select 
+id,
+book_id,
+content,
+reading_date
+from reviews
+where book_id = ?`
+}
+
+func (r *reviewRepository) FindReviewByBookID(id int) (entity.Reviews, error) {
+	result := make(entity.Reviews, 0)
+	query := r.getFindByBookIDQuery()
+	rows, err := r.handler.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = rows.Close()
+	}()
+	for rows.Next() {
+		review := entity.Review{}
+		if err := rows.Scan(
+			&review.ID,
+			&review.BookID,
+			&review.Content,
+			&review.ReadingDate,
+		); err != nil {
+			return nil, err
+		}
+		result = append(result, &review)
+	}
+	return result, nil
 }

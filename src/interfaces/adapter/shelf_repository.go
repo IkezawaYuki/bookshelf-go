@@ -61,17 +61,23 @@ func (r *shelfRepository) getCreateShelfQuery() string {
 	return `INSERT INTO shelves (owner_id, name, create_user_id) VALUES (?, ?, ?);`
 }
 
-func (r *shelfRepository) CreateShelf(userID int, shelf entity.Shelf) error {
+func (r *shelfRepository) CreateShelf(userID int, shelf entity.Shelf) (insShelf entity.Shelf, err error) {
 	query := r.getCreateShelfQuery()
-	_, err := r.handler.Exec(query,
+	result, err := r.handler.Exec(query,
 		shelf.OwnerID,
 		shelf.Name,
 		userID,
 	)
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	insShelf = shelf
+	insID, err := result.LastInsertId()
+	if err != nil {
+		return
+	}
+	insShelf.ID = int(insID)
+	return
 }
 
 func (r *shelfRepository) getUpdateShelfQuery() string {

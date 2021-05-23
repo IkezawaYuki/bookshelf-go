@@ -77,9 +77,9 @@ VALUES
 (?, ?, ?, ?, ?, ?, ?);`
 }
 
-func (r *userRepository) CreateUser(userID int, user entity.User) error {
+func (r *userRepository) CreateUser(userID int, user entity.User) (insUser entity.User, err error) {
 	query := r.getCreateUserQuery()
-	_, err := r.handler.Exec(query,
+	result, err := r.handler.Exec(query,
 		user.Name,
 		user.Gender,
 		user.BirthDate,
@@ -89,9 +89,15 @@ func (r *userRepository) CreateUser(userID int, user entity.User) error {
 		userID,
 	)
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	insUser = user
+	insID, err := result.LastInsertId()
+	if err != nil {
+		return
+	}
+	insUser.ID = int(insID)
+	return
 }
 
 func (r *userRepository) getUpdateUserQuery() string {

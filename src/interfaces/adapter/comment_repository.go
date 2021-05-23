@@ -61,17 +61,23 @@ func (b *commentRepository) getCreateCommentQuery() string {
 	return `INSERT INTO comments (review_id, content, create_user_id) VALUES (?, ?, ?);`
 }
 
-func (b *commentRepository) CreateComment(userID int, comment entity.Comment) error {
+func (b *commentRepository) CreateComment(userID int, comment entity.Comment) (insComment entity.Comment, err error) {
 	query := b.getCreateCommentQuery()
-	_, err := b.handler.Exec(query,
+	result, err := b.handler.Exec(query,
 		comment.ReviewID,
 		comment.Content,
 		userID,
 	)
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	insComment = comment
+	insID, err := result.LastInsertId()
+	if err != nil {
+		return
+	}
+	insComment.ID = int(insID)
+	return
 }
 
 func (b *commentRepository) getUpdateCommentQuery() string {
@@ -114,4 +120,32 @@ func (b *commentRepository) DeleteCommentByID(userID int, id int) error {
 		return err
 	}
 	return nil
+}
+
+func (b *commentRepository) getFindCommentByReviewID() string {
+	return `select id, review_id, content from comments where delete_flag = 0 and review_id = ?`
+}
+
+func (b *commentRepository) FindCommentByReviewID(reviewID int) (entity.Comments, error) {
+	result := make(entity.Comments, 0)
+	query := b.getFindCommentByReviewID()
+	rows, err := b.handler.Query(query, reviewID)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = rows.Close()
+	}()
+	for rows.Next() {
+		comment := entity.Comment{}
+		if err := rows.Scan(
+			&comment.ID,
+			&comment.ReviewID,
+			&comment.Content,
+		); err != nil {
+			return nil, err
+		}
+		result = append(result, &comment)
+	}
+	return result, nil
 }

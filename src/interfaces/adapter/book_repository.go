@@ -4,6 +4,7 @@ import (
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/repository"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
+	"strings"
 )
 
 func NewBookRepository(handler datastore.DBHandler) repository.BookRepository {
@@ -84,9 +85,9 @@ func (b *bookRepository) getCreateBookQuery() string {
 VALUES (?, ?, ?, ?, ?, ?)`
 }
 
-func (b *bookRepository) CreateBook(userID int, book entity.Book) error {
+func (b *bookRepository) CreateBook(userID int, book entity.Book) (insBook entity.Book, err error) {
 	query := b.getCreateBookQuery()
-	_, err := b.handler.Exec(query,
+	result, err := b.handler.Exec(query,
 		book.Name,
 		book.Publisher,
 		book.Author,
@@ -95,9 +96,15 @@ func (b *bookRepository) CreateBook(userID int, book entity.Book) error {
 		userID,
 	)
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	insBook = book
+	insID, err := result.LastInsertId()
+	if err != nil {
+		return
+	}
+	insBook.ID = int(insID)
+	return
 }
 
 func (b *bookRepository) getUpdateBookQuery() string {
@@ -146,4 +153,43 @@ func (b *bookRepository) DeleteBookByID(userID int, id int) error {
 		return err
 	}
 	return nil
+}
+
+func (b *bookRepository) getFindByNameQuery() string {
+	return `SELECT 
+id,
+name,
+publisher,
+author,
+date_of_issue,
+price
+FROM books WHERE delete_flag = 0
+and name like ("%$word%")`
+}
+
+func (b *bookRepository) FindByName(name string) (entity.Books, error) {
+	result := make(entity.Books, 0)
+	query := strings.ReplaceAll(b.getFindByNameQuery(), "$word", name)
+	rows, err := b.handler.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = rows.Close()
+	}()
+	for rows.Next() {
+		book := entity.Book{}
+		if err := rows.Scan(
+			&book.ID,
+			&book.Name,
+			&book.Publisher,
+			&book.Author,
+			&book.DateOfIssue,
+			&book.Price,
+		); err != nil {
+			return nil, err
+		}
+		result = append(result, &book)
+	}
+	return result, nil
 }
