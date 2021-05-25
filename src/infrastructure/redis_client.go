@@ -1,4 +1,4 @@
-package redis_client
+package infrastructure
 
 import (
 	"context"
@@ -11,6 +11,10 @@ type redisClient struct {
 	redis *redis.Client
 }
 
+var (
+	RedisHandler datastore.RedisHandler
+)
+
 func NewRedisClient(c *redis.Client) datastore.RedisHandler {
 	return &redisClient{redis: c}
 }
@@ -21,6 +25,15 @@ func GetRedisConnection() *redis.Client {
 		Password: os.Getenv("REDIS_PASS"),
 		DB:       0, // use default DB
 	})
+}
+
+func init() {
+	conn := redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("REDIS_ADDR"),
+		Password: os.Getenv("REDIS_PASS"),
+		DB:       0, // use default DB
+	})
+	RedisHandler = &redisClient{redis: conn}
 }
 
 func (c *redisClient) Get(key string) (string, error) {

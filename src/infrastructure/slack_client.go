@@ -1,4 +1,4 @@
-package slack
+package infrastructure
 
 type slackClient struct {
 }

@@ -1,4 +1,4 @@
-package spreadsheet
+package infrastructure
 
 import "github.com/IkezawaYuki/bookshelf-go/src/usecase/outputport"
 
@@ -9,6 +9,10 @@ func NewSpreadSheetClient() outputport.OutputPort {
 	return &spreadsheetClient{}
 }
 
-func (s *spreadsheetClient) OutputData() {
+func (s *spreadsheetClient) OutputSpreadSheet() {
 
+}
+
+func (s *spreadsheetClient) OutSpreadSheet() {
+	panic("implement me")
 }
