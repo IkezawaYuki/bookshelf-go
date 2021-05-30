@@ -6,13 +6,15 @@ import (
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
 )
 
-func NewReviewRepository(handler datastore.DBHandler) repository.ReviewRepository {
-	return &reviewRepository{handler: handler}
+func NewReviewRepository(handler datastore.DBHandler) {
+	ReviewRepo = &reviewRepository{handler: handler}
 }
 
 type reviewRepository struct {
 	handler datastore.DBHandler
 }
+
+var ReviewRepo repository.ReviewRepository
 
 func (r *reviewRepository) getFindAllReviewQuery() string {
 	return `select id, book_id, content, reading_date from reviews where delete_flag = 0`

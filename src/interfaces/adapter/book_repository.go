@@ -7,13 +7,15 @@ import (
 	"strings"
 )
 
-func NewBookRepository(handler datastore.DBHandler) repository.BookRepository {
-	return &bookRepository{handler: handler}
+func NewBookRepository(handler datastore.DBHandler) {
+	BookRepo = &bookRepository{handler: handler}
 }
 
 type bookRepository struct {
 	handler datastore.DBHandler
 }
+
+var BookRepo repository.BookRepository
 
 func (b *bookRepository) getFindAllBookQuery() string {
 	return `SELECT 

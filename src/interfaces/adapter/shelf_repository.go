@@ -6,13 +6,15 @@ import (
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
 )
 
-func NewShelfRepository(handler datastore.DBHandler) repository.ShelfRepository {
-	return &shelfRepository{handler: handler}
+func NewShelfRepository(handler datastore.DBHandler) {
+	ShelfRepo = &shelfRepository{handler: handler}
 }
 
 type shelfRepository struct {
 	handler datastore.DBHandler
 }
+
+var ShelfRepo repository.ShelfRepository
 
 func (r *shelfRepository) getFindAllShelfQuery() string {
 	return `select id, owner_id, name from shelves where delete_flag = 0`
