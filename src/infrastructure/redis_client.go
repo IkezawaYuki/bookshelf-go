@@ -40,8 +40,9 @@ func (c *redisClient) Get(key string) (string, error) {
 	return c.redis.Get(context.Background(), key).Result()
 }
 
-func (c *redisClient) Set(key string, value interface{}) (string, error) {
-	return c.redis.Set(context.Background(), key, value, 0).Result()
+func (c *redisClient) Set(key string, value interface{}) error {
+	_, err := c.redis.Set(context.Background(), key, value, 0).Result()
+	return err
 }
 
 func (c *redisClient) Close() error {
