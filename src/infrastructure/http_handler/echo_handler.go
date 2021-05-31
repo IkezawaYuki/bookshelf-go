@@ -1,12 +1,14 @@
-package infrastructure
+package http_handler
 
 import (
+	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/redis"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/controller"
 	"github.com/IkezawaYuki/bookshelf-go/src/registry"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/gomniauth/providers/google"
+	"github.com/swaggo/echo-swagger"
 	"os"
 	"os/signal"
 	"strings"
@@ -34,6 +36,9 @@ func StartApp() {
 			return false
 		},
 	}))
+
+	// swagger
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	/*
 		認証の必要がないAPI
@@ -76,6 +81,6 @@ func StartApp() {
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 	_ = container.Clean()
-	_ = RedisHandler.Close()
+	_ = redis.Handler.Close()
 	// todo DB close
 }

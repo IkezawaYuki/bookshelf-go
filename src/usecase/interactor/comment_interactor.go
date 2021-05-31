@@ -2,6 +2,7 @@ package interactor
 
 import (
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
+	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/adapter"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/inputport"
 )
 
@@ -13,11 +14,11 @@ func NewCommentInteractor() inputport.CommentInputPort {
 }
 
 func (c *commentInteractor) FindAllComment() (entity.Comments, error) {
-	panic("implement me")
+	return adapter.CommentRepo.FindAllComment()
 }
 
 func (c *commentInteractor) FindCommentByID(id int) (*entity.Comment, error) {
-	panic("implement me")
+	return adapter.CommentRepo.FindCommentByID(id)
 }
 
 func (c *commentInteractor) CreateComment(userID int, book entity.Comment) (*entity.Comment, error) {

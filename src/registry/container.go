@@ -1,7 +1,7 @@
 package registry
 
 import (
-	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure"
+	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/mysql"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/adapter"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/controller"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/interactor"
@@ -43,8 +43,8 @@ func (c *Container) Clean() error {
 }
 
 func buildBookShelfController(ctn di.Container) (interface{}, error) {
-	conn := infrastructure.GetMySQLConnection()
-	handler := infrastructure.NewMySQLHandler(conn)
+	conn := mysql.GetMySQLConnection()
+	handler := mysql.NewMySQLHandler(conn)
 	adapter.NewBookRepository(handler)
 	adapter.NewCommentRepository(handler)
 	adapter.NewReviewRepository(handler)

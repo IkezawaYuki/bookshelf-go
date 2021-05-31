@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/model"
-	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure"
+	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/redis"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/inputport"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/outputport"
 	"github.com/google/uuid"
@@ -96,7 +96,7 @@ func (a *AuthController) Callback(c outputport.Context) error {
 		return err
 	}
 
-	if err := infrastructure.RedisHandler.Set(key, bytes); err != nil {
+	if err := redis.Handler.Set(key, bytes); err != nil {
 		_ = c.JSON(http.StatusInternalServerError, err.Error())
 		return err
 	}
@@ -105,7 +105,7 @@ func (a *AuthController) Callback(c outputport.Context) error {
 }
 
 func (a *AuthController) Logout(c outputport.Context) error {
-	if err := infrastructure.RedisHandler.Delete(c.Get("key").(string)); err != nil {
+	if err := redis.Handler.Delete(c.Get("key").(string)); err != nil {
 		_ = c.JSON(http.StatusInternalServerError, err.Error())
 		return err
 	}

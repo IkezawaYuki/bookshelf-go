@@ -1,8 +1,9 @@
-package infrastructure
+package auth
 
 import (
 	"encoding/json"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/model"
+	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/redis"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strings"
@@ -29,7 +30,7 @@ func AuthGuard() echo.MiddlewareFunc {
 }
 
 func getTokenFromRedis(str string) (*model.Token, error) {
-	jsonStr, err := RedisHandler.Get(str)
+	jsonStr, err := redis.Handler.Get(str)
 	if err != nil {
 		return nil, err
 	}

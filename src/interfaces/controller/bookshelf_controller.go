@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/inputport"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/outputport"
+	"net/http"
 )
 
 type BookshelfController struct {
@@ -29,6 +30,10 @@ func NewBookshelfController(
 	}
 }
 
+// GetVersion バージョン情報の取得
+// @Summary バージョン情報を文字列で返す
+// @Success 200 {string} 0.0.0
+// @Router /version [get]
 func (ctr *BookshelfController) GetVersion(c outputport.Context) error {
-	return nil
+	return c.JSON(http.StatusOK, "0,0,0")
 }

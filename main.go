@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure"
+	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/http_handler"
+	_ "github.com/swaggo/echo-swagger/example/docs"
 	"os"
 )
 
 // @title bookshelf-api
 // @version 0.0.0
-// @description aaa
+// @description 読書●ーターを参考にした下位互換API
 // @BasePath /v1
 func main() {
 	apiEndpoint := os.Getenv("API_ENDPOINT")
@@ -16,5 +17,5 @@ func main() {
 	} else {
 
 	}
-	infrastructure.StartApp()
+	http_handler.StartApp()
 }
