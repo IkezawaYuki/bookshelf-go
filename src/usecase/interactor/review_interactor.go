@@ -16,11 +16,11 @@ func (r *reviewInteractor) FindAllReview() (entity.Reviews, error) {
 	panic("implement me")
 }
 
-func (r *reviewInteractor) FindReviewByID(id int) (entity.Review, error) {
+func (r *reviewInteractor) FindReviewByID(id int) (*entity.Review, error) {
 	panic("implement me")
 }
 
-func (r *reviewInteractor) CreateReview(userID int, review entity.Review) (entity.Review, error) {
+func (r *reviewInteractor) CreateReview(userID int, review entity.Review) (*entity.Review, error) {
 	panic("implement me")
 }
 

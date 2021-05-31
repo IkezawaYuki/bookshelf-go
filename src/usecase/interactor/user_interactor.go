@@ -17,7 +17,7 @@ func (u *userInteractor) FindAllUser() (entity.Users, error) {
 	panic("implement me")
 }
 
-func (u *userInteractor) FindUserByID(id int) (entity.User, error) {
+func (u *userInteractor) FindUserByID(id int) (*entity.User, error) {
 	panic("implement me")
 }
 

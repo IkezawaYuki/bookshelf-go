@@ -16,11 +16,11 @@ func (c *commentInteractor) FindAllComment() (entity.Comments, error) {
 	panic("implement me")
 }
 
-func (c *commentInteractor) FindCommentByID(id int) (entity.Comment, error) {
+func (c *commentInteractor) FindCommentByID(id int) (*entity.Comment, error) {
 	panic("implement me")
 }
 
-func (c *commentInteractor) CreateComment(userID int, book entity.Comment) (entity.Comment, error) {
+func (c *commentInteractor) CreateComment(userID int, book entity.Comment) (*entity.Comment, error) {
 	panic("implement me")
 }
 

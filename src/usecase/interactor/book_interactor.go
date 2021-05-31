@@ -17,11 +17,11 @@ func (b *bookInteractor) FindAllBook() (entity.Books, error) {
 	return adapter.BookRepo.FindAllBook()
 }
 
-func (b *bookInteractor) FindBookByID(id int) (entity.Book, error) {
+func (b *bookInteractor) FindBookByID(id int) (*entity.Book, error) {
 	return adapter.BookRepo.FindBookByID(id)
 }
 
-func (b *bookInteractor) CreateBook(userID int, book entity.Book) (entity.Book, error) {
+func (b *bookInteractor) CreateBook(userID int, book entity.Book) (*entity.Book, error) {
 	return adapter.BookRepo.CreateBook(userID, book)
 }
 

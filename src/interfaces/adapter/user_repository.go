@@ -53,10 +53,11 @@ func (r *userRepository) getFindUserByIDQuery() string {
 from users where id = ? and delete_flag = 0`
 }
 
-func (r *userRepository) FindUserByID(id int) (user entity.User, err error) {
+func (r *userRepository) FindUserByID(id int) (*entity.User, error) {
 	query := r.getFindUserByIDQuery()
 	row := r.handler.QueryRow(query, id)
-	err = row.Scan(
+	var user entity.User
+	err := row.Scan(
 		&user.Name,
 		&user.Gender,
 		&user.BirthDate,
@@ -64,7 +65,7 @@ func (r *userRepository) FindUserByID(id int) (user entity.User, err error) {
 		&user.OccupationCode,
 		&user.AddressCode,
 	)
-	return
+	return &user, err
 }
 
 func (r *userRepository) getCreateUserQuery() string {

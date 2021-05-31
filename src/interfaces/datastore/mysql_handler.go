@@ -5,4 +5,5 @@ type DBHandler interface {
 	Query(query string, args ...interface{}) (Rows, error)
 	QueryRow(query string, args ...interface{}) Row
 	Begin() (Tx, error)
+	Close() error
 }

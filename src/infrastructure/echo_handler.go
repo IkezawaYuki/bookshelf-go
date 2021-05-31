@@ -35,17 +35,36 @@ func StartApp() {
 		},
 	}))
 
-	// 認証の必要がないAPI
+	/*
+		認証の必要がないAPI
+	*/
 	e.GET("/v1/version", func(c echo.Context) error {
 		return bookShelfCtr.GetVersion(c)
 	})
 
-	// 認証処理
-	e.GET("v1/login", func(c echo.Context) error {
+	/*
+		認証API
+	*/
+	e.GET("v1/auth/login", func(c echo.Context) error {
 		return authCtr.Login(c)
 	})
 
-	// 認証が必要なAPI
+	e.GET("v1/auth/callback", func(c echo.Context) error {
+		return authCtr.Callback(c)
+	})
+
+	e.GET("v1/auth/logout", func(c echo.Context) error {
+		key := c.Request().Header.Get("Authentication")
+		if key == "" {
+			return nil
+		}
+		c.Set("key", key)
+		return authCtr.Logout(c)
+	})
+
+	/*
+		認証が必要なAPI
+	*/
 
 	go func() {
 		if err := e.Start(":8080"); err != nil {
@@ -57,6 +76,6 @@ func StartApp() {
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 	_ = container.Clean()
-
+	_ = RedisHandler.Close()
 	// todo DB close
 }

@@ -16,11 +16,11 @@ func (s *shelfInteractor) FindAllShelf() (entity.Shelves, error) {
 	panic("implement me")
 }
 
-func (s *shelfInteractor) FindShelfByID(id int) (entity.Shelf, error) {
+func (s *shelfInteractor) FindShelfByID(id int) (*entity.Shelf, error) {
 	panic("implement me")
 }
 
-func (s *shelfInteractor) CreateShelf(userID int, shelf entity.Shelf) (entity.Shelf, error) {
+func (s *shelfInteractor) CreateShelf(userID int, shelf entity.Shelf) (*entity.Shelf, error) {
 	panic("implement me")
 }
 

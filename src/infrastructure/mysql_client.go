@@ -54,6 +54,10 @@ func (m *mysqlHandler) Begin() (datastore.Tx, error) {
 	return t, err
 }
 
+func (m *mysqlHandler) Close() error {
+	return m.db.Close()
+}
+
 type Tx struct {
 	tx *sql.Tx
 }

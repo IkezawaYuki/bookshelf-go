@@ -41,7 +41,7 @@ func (a *AuthController) Login(c outputport.Context) error {
 		os.Getenv("SECURITY_KEY"),
 		oauth2.AccessTypeOffline,
 		oauth2.ApprovalForce)
-	return c.String(http.StatusOK, loginURL)
+	return c.JSON(http.StatusOK, loginURL)
 }
 
 func (a *AuthController) Callback(c outputport.Context) error {
@@ -101,5 +101,13 @@ func (a *AuthController) Callback(c outputport.Context) error {
 		return err
 	}
 
+	return c.JSON(http.StatusOK, nil)
+}
+
+func (a *AuthController) Logout(c outputport.Context) error {
+	if err := infrastructure.RedisHandler.Delete(c.Get("key").(string)); err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err.Error())
+		return err
+	}
 	return c.JSON(http.StatusOK, nil)
 }
