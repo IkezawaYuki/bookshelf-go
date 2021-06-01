@@ -23,7 +23,7 @@ func NewContainer() (*Container, error) {
 			Build: buildBookShelfController,
 		},
 		{
-			Name:  "authentication",
+			Name:  "auth-controller",
 			Build: buildAuthenticationController,
 		},
 	}...); err != nil {
@@ -67,5 +67,7 @@ func buildBookShelfController(ctn di.Container) (interface{}, error) {
 }
 
 func buildAuthenticationController(ctn di.Container) (interface{}, error) {
-	panic("")
+	userInputport := interactor.NewUserInteractor()
+	ctr := controller.NewAuthController(userInputport)
+	return &ctr, nil
 }

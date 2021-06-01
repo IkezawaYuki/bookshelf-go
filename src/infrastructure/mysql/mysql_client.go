@@ -21,7 +21,7 @@ func NewMySQLHandler(db *sql.DB) datastore.DBHandler {
 }
 
 func GetMySQLConnection() *sql.DB {
-	conn, err := sql.Open("sql",
+	conn, err := sql.Open("mysql",
 		fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true",
 			os.Getenv("DB_USER"),
 			os.Getenv("DB_PASS"),

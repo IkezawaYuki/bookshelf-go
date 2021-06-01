@@ -37,3 +37,7 @@ func NewBookshelfController(
 func (ctr *BookshelfController) GetVersion(c outputport.Context) error {
 	return c.JSON(http.StatusOK, "0,0,0")
 }
+
+func (ctr *BookshelfController) GetBook(c outputport.Context) error {
+	panic("implement")
+}
