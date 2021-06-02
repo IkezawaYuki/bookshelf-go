@@ -1,0 +1,16 @@
+basePath: /v1
+info:
+  contact: {}
+  description: 読書●ーターを参考にした下位互換API
+  title: bookshelf-api
+  version: 0.0.0
+paths:
+  /version:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: バージョン情報を文字列で返す
+swagger: "2.0"
