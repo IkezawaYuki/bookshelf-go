@@ -1,6 +1,7 @@
 package http_handler
 
 import (
+	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/auth"
 	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/redis"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/controller"
 	"github.com/IkezawaYuki/bookshelf-go/src/registry"
@@ -9,6 +10,7 @@ import (
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/gomniauth/providers/google"
 	"github.com/swaggo/echo-swagger"
+	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -37,6 +39,32 @@ func StartApp() {
 		},
 	}))
 
+	var allowsOrigins = []string{
+		"http://localhost:3000",
+	}
+
+	e.Use(
+		middleware.CORSWithConfig(middleware.CORSConfig{
+			AllowOrigins: allowsOrigins,
+			AllowMethods: []string{
+				http.MethodGet,
+				http.MethodPost,
+				http.MethodPut,
+				http.MethodDelete,
+				http.MethodPatch,
+			},
+			AllowHeaders: []string{
+				echo.HeaderAccessControlAllowHeaders,
+				echo.HeaderContentType,
+				echo.HeaderContentLength,
+				echo.HeaderAcceptEncoding,
+				echo.HeaderXCSRFToken,
+				echo.HeaderAuthorization,
+			},
+			AllowCredentials: true,
+			MaxAge:           86400,
+		}))
+
 	// swagger
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
@@ -59,7 +87,8 @@ func StartApp() {
 	})
 
 	e.GET("v1/auth/logout", func(c echo.Context) error {
-		key := c.Request().Header.Get("Authentication")
+		key := c.Request().Header.Get(echo.HeaderAuthorization)
+		key = strings.ReplaceAll(key, "Bearer ", "")
 		if key == "" {
 			return nil
 		}
@@ -70,6 +99,8 @@ func StartApp() {
 	/*
 		認証が必要なAPI
 	*/
+	g := e.Group("v1")
+	g.Use(auth.AuthGuard())
 
 	go func() {
 		if err := e.Start(":8080"); err != nil {
