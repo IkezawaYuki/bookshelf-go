@@ -102,6 +102,10 @@ func StartApp() {
 	g := e.Group("v1")
 	g.Use(auth.AuthGuard())
 
+	g.GET("/book/{id}", func(c echo.Context) error {
+		return nil
+	})
+
 	go func() {
 		if err := e.Start(":8080"); err != nil {
 			panic(err)
