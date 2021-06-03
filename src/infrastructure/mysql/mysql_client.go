@@ -1,4 +1,4 @@
-package mysql_client
+package mysql
 
 import (
 	"database/sql"
@@ -10,18 +10,18 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type mysqlHandler struct {
+type Handler struct {
 	db *sql.DB
 }
 
 func NewMySQLHandler(db *sql.DB) datastore.DBHandler {
-	return &mysqlHandler{
+	return &Handler{
 		db: db,
 	}
 }
 
 func GetMySQLConnection() *sql.DB {
-	conn, err := sql.Open("mysql_client",
+	conn, err := sql.Open("mysql",
 		fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true",
 			os.Getenv("DB_USER"),
 			os.Getenv("DB_PASS"),
@@ -34,24 +34,28 @@ func GetMySQLConnection() *sql.DB {
 	return conn
 }
 
-func (m *mysqlHandler) Exec(query string, args ...interface{}) (datastore.Result, error) {
+func (m *Handler) Exec(query string, args ...interface{}) (datastore.Result, error) {
 	return m.db.Exec(query, args...)
 }
 
-func (m *mysqlHandler) Query(query string, args ...interface{}) (datastore.Rows, error) {
+func (m *Handler) Query(query string, args ...interface{}) (datastore.Rows, error) {
 	return m.db.Query(query, args...)
 }
 
-func (m *mysqlHandler) QueryRow(query string, args ...interface{}) datastore.Row {
+func (m *Handler) QueryRow(query string, args ...interface{}) datastore.Row {
 	return m.db.QueryRow(query, args...)
 }
 
-func (m *mysqlHandler) Begin() (datastore.Tx, error) {
+func (m *Handler) Begin() (datastore.Tx, error) {
 	tx, err := m.db.Begin()
 	t := Tx{
 		tx: tx,
 	}
 	return t, err
+}
+
+func (m *Handler) Close() error {
+	return m.db.Close()
 }
 
 type Tx struct {

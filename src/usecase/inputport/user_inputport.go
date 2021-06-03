@@ -1,8 +1,8 @@
-package repository
+package inputport
 
 import "github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
 
-type UserRepository interface {
+type UserInputPort interface {
 	FindAllUser() (entity.Users, error)
 	FindUserByID(id int) (*entity.User, error)
 	CreateUser(userID int, user entity.User) (*entity.User, error)

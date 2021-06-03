@@ -6,9 +6,11 @@ import (
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
 )
 
-func NewCommentRepository(handler datastore.DBHandler) repository.CommentRepository {
-	return &commentRepository{handler: handler}
+func NewCommentRepository(handler datastore.DBHandler) {
+	CommentRepo = &commentRepository{handler: handler}
 }
+
+var CommentRepo repository.CommentRepository
 
 type commentRepository struct {
 	handler datastore.DBHandler
@@ -46,22 +48,23 @@ func (b *commentRepository) getFindCommentByIDQuery() string {
 	return `select id, review_id, content from comments where id = ? and delete_flag = 0`
 }
 
-func (b *commentRepository) FindCommentByID(id int) (comment entity.Comment, err error) {
+func (b *commentRepository) FindCommentByID(id int) (*entity.Comment, error) {
 	query := b.getFindCommentByIDQuery()
 	row := b.handler.QueryRow(query, id)
-	err = row.Scan(
+	var comment entity.Comment
+	err := row.Scan(
 		&comment.ID,
 		&comment.ReviewID,
 		&comment.Content,
 	)
-	return
+	return &comment, err
 }
 
 func (b *commentRepository) getCreateCommentQuery() string {
 	return `INSERT INTO comments (review_id, content, create_user_id) VALUES (?, ?, ?);`
 }
 
-func (b *commentRepository) CreateComment(userID int, comment entity.Comment) (insComment entity.Comment, err error) {
+func (b *commentRepository) CreateComment(userID int, comment entity.Comment) (*entity.Comment, error) {
 	query := b.getCreateCommentQuery()
 	result, err := b.handler.Exec(query,
 		comment.ReviewID,
@@ -69,15 +72,14 @@ func (b *commentRepository) CreateComment(userID int, comment entity.Comment) (i
 		userID,
 	)
 	if err != nil {
-		return
+		return nil, err
 	}
-	insComment = comment
 	insID, err := result.LastInsertId()
 	if err != nil {
-		return
+		return nil, err
 	}
-	insComment.ID = int(insID)
-	return
+	comment.ID = int(insID)
+	return &comment, nil
 }
 
 func (b *commentRepository) getUpdateCommentQuery() string {

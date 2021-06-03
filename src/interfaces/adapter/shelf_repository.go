@@ -6,13 +6,15 @@ import (
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
 )
 
-func NewShelfRepository(handler datastore.DBHandler) repository.ShelfRepository {
-	return &shelfRepository{handler: handler}
+func NewShelfRepository(handler datastore.DBHandler) {
+	ShelfRepo = &shelfRepository{handler: handler}
 }
 
 type shelfRepository struct {
 	handler datastore.DBHandler
 }
+
+var ShelfRepo repository.ShelfRepository
 
 func (r *shelfRepository) getFindAllShelfQuery() string {
 	return `select id, owner_id, name from shelves where delete_flag = 0`
@@ -46,22 +48,23 @@ func (r *shelfRepository) getFindShelfByIDQuery() string {
 	return `select id, owner_id, name from shelves where id = ? and delete_flag = 0`
 }
 
-func (r *shelfRepository) FindShelfByID(id int) (shelf entity.Shelf, err error) {
+func (r *shelfRepository) FindShelfByID(id int) (*entity.Shelf, error) {
 	query := r.getFindShelfByIDQuery()
 	row := r.handler.QueryRow(query, id)
-	err = row.Scan(
+	var shelf entity.Shelf
+	err := row.Scan(
 		&shelf.ID,
 		&shelf.OwnerID,
 		&shelf.Name,
 	)
-	return
+	return &shelf, err
 }
 
 func (r *shelfRepository) getCreateShelfQuery() string {
 	return `INSERT INTO shelves (owner_id, name, create_user_id) VALUES (?, ?, ?);`
 }
 
-func (r *shelfRepository) CreateShelf(userID int, shelf entity.Shelf) (insShelf entity.Shelf, err error) {
+func (r *shelfRepository) CreateShelf(userID int, shelf entity.Shelf) (*entity.Shelf, error) {
 	query := r.getCreateShelfQuery()
 	result, err := r.handler.Exec(query,
 		shelf.OwnerID,
@@ -69,15 +72,14 @@ func (r *shelfRepository) CreateShelf(userID int, shelf entity.Shelf) (insShelf 
 		userID,
 	)
 	if err != nil {
-		return
+		return nil, err
 	}
-	insShelf = shelf
 	insID, err := result.LastInsertId()
 	if err != nil {
-		return
+		return nil, err
 	}
-	insShelf.ID = int(insID)
-	return
+	shelf.ID = int(insID)
+	return &shelf, nil
 }
 
 func (r *shelfRepository) getUpdateShelfQuery() string {

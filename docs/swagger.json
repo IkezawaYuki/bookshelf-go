@@ -1,0 +1,25 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "読書●ーターを参考にした下位互換API",
+        "title": "bookshelf-api",
+        "contact": {},
+        "version": "0.0.0"
+    },
+    "basePath": "/v1",
+    "paths": {
+        "/version": {
+            "get": {
+                "summary": "バージョン情報を文字列で返す",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -6,13 +6,15 @@ import (
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
 )
 
-func NewReviewRepository(handler datastore.DBHandler) repository.ReviewRepository {
-	return &reviewRepository{handler: handler}
+func NewReviewRepository(handler datastore.DBHandler) {
+	ReviewRepo = &reviewRepository{handler: handler}
 }
 
 type reviewRepository struct {
 	handler datastore.DBHandler
 }
+
+var ReviewRepo repository.ReviewRepository
 
 func (r *reviewRepository) getFindAllReviewQuery() string {
 	return `select id, book_id, content, reading_date from reviews where delete_flag = 0`
@@ -47,23 +49,24 @@ func (r *reviewRepository) getFindReviewByIDQuery() string {
 	return `select id, book_id, content, reading_date from reviews where id = ? and delete_flag = 0`
 }
 
-func (r *reviewRepository) FindReviewByID(id int) (review entity.Review, err error) {
+func (r *reviewRepository) FindReviewByID(id int) (*entity.Review, error) {
 	query := r.getFindReviewByIDQuery()
 	row := r.handler.QueryRow(query, id)
-	err = row.Scan(
+	var review entity.Review
+	err := row.Scan(
 		&review.ID,
 		&review.BookID,
 		&review.Content,
 		&review.ReadingDate,
 	)
-	return
+	return &review, err
 }
 
 func (r *reviewRepository) getCreateReviewQuery() string {
 	return `INSERT INTO reviews (book_id, content, reading_date, create_user_id) VALUES (?, ?, ?, ?)`
 }
 
-func (r *reviewRepository) CreateReview(userID int, review entity.Review) (insReview entity.Review, err error) {
+func (r *reviewRepository) CreateReview(userID int, review entity.Review) (*entity.Review, error) {
 	query := r.getCreateReviewQuery()
 	result, err := r.handler.Exec(query,
 		review.BookID,
@@ -72,15 +75,14 @@ func (r *reviewRepository) CreateReview(userID int, review entity.Review) (insRe
 		userID,
 	)
 	if err != nil {
-		return
+		return nil, err
 	}
-	insReview = review
 	insID, err := result.LastInsertId()
 	if err != nil {
-		return
+		return nil, err
 	}
-	insReview.ID = int(insID)
-	return insReview, nil
+	review.ID = int(insID)
+	return &review, nil
 }
 
 func (r *reviewRepository) getUpdateReviewQuery() string {

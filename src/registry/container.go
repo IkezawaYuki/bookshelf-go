@@ -1,9 +1,9 @@
 package registry
 
 import (
-	"fmt"
-	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/mysql_client"
+	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/mysql"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/adapter"
+	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/controller"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/interactor"
 	"github.com/sarulabs/di"
 )
@@ -22,6 +22,10 @@ func NewContainer() (*Container, error) {
 			Name:  "bookshelf-controller",
 			Build: buildBookShelfController,
 		},
+		{
+			Name:  "auth-controller",
+			Build: buildAuthenticationController,
+		},
 	}...); err != nil {
 		return nil, err
 	}
@@ -30,21 +34,40 @@ func NewContainer() (*Container, error) {
 	}, nil
 }
 
+func (c *Container) Resolve(name string) interface{} {
+	return c.ctn.Get(name)
+}
+
+func (c *Container) Clean() error {
+	return c.ctn.Clean()
+}
+
 func buildBookShelfController(ctn di.Container) (interface{}, error) {
-	conn := mysql_client.GetMySQLConnection()
-	handler := mysql_client.NewMySQLHandler(conn)
-	bookRepo := adapter.NewBookRepository(handler)
-	commentRepo := adapter.NewCommentRepository(handler)
-	reviewRepo := adapter.NewReviewRepository(handler)
-	shelfRepo := adapter.NewShelfRepository(handler)
-	userRepo := adapter.NewUserRepository(handler)
-	itr := interactor.NewBookshelfInteractor(
-		bookRepo,
-		commentRepo,
-		reviewRepo,
-		shelfRepo,
-		userRepo,
+	conn := mysql.GetMySQLConnection()
+	handler := mysql.NewMySQLHandler(conn)
+	adapter.NewBookRepository(handler)
+	adapter.NewCommentRepository(handler)
+	adapter.NewReviewRepository(handler)
+	adapter.NewShelfRepository(handler)
+	adapter.NewUserRepository(handler)
+
+	bookInputport := interactor.NewBookInteractor()
+	commentInputport := interactor.NewCommentInteractor()
+	reviewInputport := interactor.NewReviewInteractor()
+	shelfInputport := interactor.NewShelfInteractor()
+	userInputport := interactor.NewUserInteractor()
+	ctr := controller.NewBookshelfController(
+		bookInputport,
+		commentInputport,
+		reviewInputport,
+		shelfInputport,
+		userInputport,
 	)
-	fmt.Println(itr)
-	panic("")
+	return &ctr, nil
+}
+
+func buildAuthenticationController(ctn di.Container) (interface{}, error) {
+	userInputport := interactor.NewUserInteractor()
+	ctr := controller.NewAuthController(userInputport)
+	return &ctr, nil
 }

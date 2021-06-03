@@ -7,13 +7,15 @@ import (
 	"strings"
 )
 
-func NewBookRepository(handler datastore.DBHandler) repository.BookRepository {
-	return &bookRepository{handler: handler}
+func NewBookRepository(handler datastore.DBHandler) {
+	BookRepo = &bookRepository{handler: handler}
 }
 
 type bookRepository struct {
 	handler datastore.DBHandler
 }
+
+var BookRepo repository.BookRepository
 
 func (b *bookRepository) getFindAllBookQuery() string {
 	return `SELECT 
@@ -64,10 +66,11 @@ price
 FROM books WHERE id = ? AND delete_flag = 0`
 }
 
-func (b *bookRepository) FindBookByID(id int) (book entity.Book, err error) {
+func (b *bookRepository) FindBookByID(id int) (*entity.Book, error) {
 	query := b.getFindBookByIDQuery()
 	row := b.handler.QueryRow(query, id)
-	if err = row.Scan(
+	var book entity.Book
+	if err := row.Scan(
 		&book.ID,
 		&book.Name,
 		&book.Publisher,
@@ -75,9 +78,9 @@ func (b *bookRepository) FindBookByID(id int) (book entity.Book, err error) {
 		&book.DateOfIssue,
 		&book.Price,
 	); err != nil {
-		return
+		return nil, err
 	}
-	return
+	return &book, nil
 }
 
 func (b *bookRepository) getCreateBookQuery() string {
@@ -85,7 +88,7 @@ func (b *bookRepository) getCreateBookQuery() string {
 VALUES (?, ?, ?, ?, ?, ?)`
 }
 
-func (b *bookRepository) CreateBook(userID int, book entity.Book) (insBook entity.Book, err error) {
+func (b *bookRepository) CreateBook(userID int, book entity.Book) (*entity.Book, error) {
 	query := b.getCreateBookQuery()
 	result, err := b.handler.Exec(query,
 		book.Name,
@@ -96,15 +99,14 @@ func (b *bookRepository) CreateBook(userID int, book entity.Book) (insBook entit
 		userID,
 	)
 	if err != nil {
-		return
+		return nil, err
 	}
-	insBook = book
 	insID, err := result.LastInsertId()
 	if err != nil {
-		return
+		return nil, err
 	}
-	insBook.ID = int(insID)
-	return
+	book.ID = int(insID)
+	return &book, nil
 }
 
 func (b *bookRepository) getUpdateBookQuery() string {
