@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/inputport"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/outputport"
 	"net/http"
@@ -64,4 +65,22 @@ func (ctr *BookshelfController) GetBook(c outputport.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, book)
+}
+
+func (ctr *BookshelfController) RegisterBook(c outputport.Context) error {
+	var book entity.Book
+	err := c.Bind(book)
+	if err != nil {
+		_ = c.JSON(http.StatusBadRequest, err)
+		return err
+	}
+
+	userID := c.Get("user_id").(int)
+	insBook, err := ctr.bookInputport.CreateBook(userID, book)
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	return c.JSON(http.StatusOK, insBook)
 }
