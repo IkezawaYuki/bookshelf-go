@@ -2,33 +2,36 @@ package interactor
 
 import (
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
-	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/adapter"
+	"github.com/IkezawaYuki/bookshelf-go/src/domain/repository"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/inputport"
 )
 
 type bookInteractor struct {
+	bookRepo repository.BookRepository
 }
 
-func NewBookInteractor() inputport.BookInputPort {
-	return &bookInteractor{}
+func NewBookInteractor(repo repository.BookRepository) inputport.BookInputPort {
+	return &bookInteractor{
+		bookRepo: repo,
+	}
 }
 
 func (b *bookInteractor) FindAllBook() (entity.Books, error) {
-	return adapter.BookRepo.FindAllBook()
+	return b.bookRepo.FindAllBook()
 }
 
 func (b *bookInteractor) FindBookByID(id int) (*entity.Book, error) {
-	return adapter.BookRepo.FindBookByID(id)
+	return b.bookRepo.FindBookByID(id)
 }
 
 func (b *bookInteractor) CreateBook(userID int, book entity.Book) (*entity.Book, error) {
-	return adapter.BookRepo.CreateBook(userID, book)
+	return b.bookRepo.CreateBook(userID, book)
 }
 
 func (b *bookInteractor) UpdateBook(userID int, book entity.Book) error {
-	return adapter.BookRepo.UpdateBook(userID, book)
+	return b.bookRepo.UpdateBook(userID, book)
 }
 
 func (b *bookInteractor) DeleteBookByID(userID int, id int) error {
-	return adapter.BookRepo.DeleteBookByID(userID, id)
+	return b.bookRepo.DeleteBookByID(userID, id)
 }
