@@ -45,17 +45,17 @@ func (c *Container) Clean() error {
 func buildBookShelfController(ctn di.Container) (interface{}, error) {
 	conn := mysql.GetMySQLConnection()
 	handler := mysql.NewMySQLHandler(conn)
-	adapter.NewBookRepository(handler)
-	adapter.NewCommentRepository(handler)
-	adapter.NewReviewRepository(handler)
-	adapter.NewShelfRepository(handler)
-	adapter.NewUserRepository(handler)
+	bookRepo := adapter.NewBookRepository(handler)
+	commentRepo := adapter.NewCommentRepository(handler)
+	reviewRepo := adapter.NewReviewRepository(handler)
+	shelfRepo := adapter.NewShelfRepository(handler)
+	userRepo := adapter.NewUserRepository(handler)
 
-	bookInputport := interactor.NewBookInteractor()
-	commentInputport := interactor.NewCommentInteractor()
-	reviewInputport := interactor.NewReviewInteractor()
-	shelfInputport := interactor.NewShelfInteractor()
-	userInputport := interactor.NewUserInteractor()
+	bookInputport := interactor.NewBookInteractor(bookRepo)
+	commentInputport := interactor.NewCommentInteractor(commentRepo)
+	reviewInputport := interactor.NewReviewInteractor(reviewRepo)
+	shelfInputport := interactor.NewShelfInteractor(shelfRepo)
+	userInputport := interactor.NewUserInteractor(userRepo)
 	ctr := controller.NewBookshelfController(
 		bookInputport,
 		commentInputport,
@@ -67,7 +67,10 @@ func buildBookShelfController(ctn di.Container) (interface{}, error) {
 }
 
 func buildAuthenticationController(ctn di.Container) (interface{}, error) {
-	userInputport := interactor.NewUserInteractor()
+	conn := mysql.GetMySQLConnection()
+	handler := mysql.NewMySQLHandler(conn)
+	userRepo := adapter.NewUserRepository(handler)
+	userInputport := interactor.NewUserInteractor(userRepo)
 	ctr := controller.NewAuthController(userInputport)
 	return &ctr, nil
 }
