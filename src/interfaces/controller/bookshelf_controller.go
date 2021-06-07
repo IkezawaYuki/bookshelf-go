@@ -82,5 +82,39 @@ func (ctr *BookshelfController) RegisterBook(c outputport.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, insBook)
+	return c.JSON(http.StatusCreated, insBook)
+}
+
+func (ctr *BookshelfController) UpdateBook(c outputport.Context) error {
+	var book entity.Book
+	err := c.Bind(book)
+	if err != nil {
+		_ = c.JSON(http.StatusBadRequest, err)
+		return err
+	}
+
+	userID := c.Get("user_id").(int)
+	if err := ctr.bookInputport.UpdateBook(userID, book); err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	return c.JSON(http.StatusAccepted, nil)
+}
+
+func (ctr *BookshelfController) DeleteBook(c outputport.Context) error {
+	bookID := c.QueryParam("id")
+	id, err := strconv.Atoi(bookID)
+	if err != nil {
+		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", bookID, err))
+		return err
+	}
+
+	userID := c.Get("user_id").(int)
+	if err := ctr.bookInputport.DeleteBookByID(userID, id); err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	return c.JSON(http.StatusAccepted, nil)
 }
