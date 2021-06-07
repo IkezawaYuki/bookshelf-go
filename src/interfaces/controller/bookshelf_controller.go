@@ -38,7 +38,7 @@ func NewBookshelfController(
 // @Success 200 {string} 0.0.0
 // @Router /version [get]
 func (ctr *BookshelfController) GetVersion(c outputport.Context) error {
-	return c.JSON(http.StatusOK, "0,0,0")
+	return c.JSON(http.StatusOK, "0.0.0")
 }
 
 func (ctr *BookshelfController) GetBooks(c outputport.Context) error {

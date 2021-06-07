@@ -103,7 +103,19 @@ func StartApp() {
 	g.Use(auth.AuthGuard())
 
 	g.GET("/book/{id}", func(c echo.Context) error {
-		return nil
+		return bookShelfCtr.GetBook(c)
+	})
+
+	g.POST("/book", func(c echo.Context) error {
+		return bookShelfCtr.RegisterBook(c)
+	})
+
+	g.PATCH("/book", func(c echo.Context) error {
+		return bookShelfCtr.UpdateBook(c)
+	})
+
+	g.DELETE("/book/{id}", func(c echo.Context) error {
+		return bookShelfCtr.DeleteBook(c)
 	})
 
 	go func() {
