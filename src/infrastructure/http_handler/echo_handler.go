@@ -19,7 +19,11 @@ import (
 func StartApp() {
 	gomniauth.SetSecurityKey(os.Getenv("SECURITY_KEY"))
 	gomniauth.WithProviders(
-		google.New(os.Getenv("CLIENT_ID"), os.Getenv("CLIENT_SECRET"), os.Getenv("REDIRECT_URL")),
+		google.New(
+			os.Getenv("CLIENT_ID"),
+			os.Getenv("CLIENT_SECRET"),
+			os.Getenv("REDIRECT_URL"),
+		),
 	)
 	container, err := registry.NewContainer()
 	if err != nil {
@@ -78,15 +82,15 @@ func StartApp() {
 	/*
 		認証API
 	*/
-	e.GET("v1/auth/login", func(c echo.Context) error {
+	e.GET("/v1/auth/login", func(c echo.Context) error {
 		return authCtr.Login(c)
 	})
 
-	e.GET("v1/auth/callback", func(c echo.Context) error {
+	e.GET("/v1/auth/callback", func(c echo.Context) error {
 		return authCtr.Callback(c)
 	})
 
-	e.GET("v1/auth/logout", func(c echo.Context) error {
+	e.GET("/v1/auth/logout", func(c echo.Context) error {
 		key := c.Request().Header.Get(echo.HeaderAuthorization)
 		key = strings.ReplaceAll(key, "Bearer ", "")
 		if key == "" {
