@@ -45,6 +45,14 @@ func (ctr *BookshelfController) GetBooks(c outputport.Context) error {
 	panic("implement")
 }
 
+// GetBook 本の取得
+// @Title GetBook
+// @Description idによる本の取得
+// @Accept json
+// @Produce json
+// @Param id path int true "本のID"
+// @Success 200 {object} entity.Book
+// @Router /book/{id} [get]
 func (ctr *BookshelfController) GetBook(c outputport.Context) error {
 	bookID := c.QueryParam("id")
 	id, err := strconv.Atoi(bookID)
