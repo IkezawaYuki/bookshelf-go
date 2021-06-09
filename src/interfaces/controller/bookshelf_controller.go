@@ -132,7 +132,14 @@ func (ctr *BookshelfController) FindReviews(c outputport.Context) error {
 	id, err := strconv.Atoi(bookID)
 	if err != nil {
 		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", bookID, err))
+		return err
 	}
 
-	ctr.reviewInputport
+	reviews, err := ctr.reviewInputport.FindReviewByBookID(id)
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	return c.JSON(http.StatusOK, reviews)
 }
