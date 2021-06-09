@@ -8,4 +8,5 @@ type ReviewInputPort interface {
 	CreateReview(userID int, review entity.Review) (*entity.Review, error)
 	UpdateReview(userID int, review entity.Review) error
 	DeleteReviewByID(userID int, id int) error
+	FindReviewByBookID(id int) (entity.Reviews, error)
 }

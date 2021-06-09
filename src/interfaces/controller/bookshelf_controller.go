@@ -126,3 +126,13 @@ func (ctr *BookshelfController) DeleteBook(c outputport.Context) error {
 
 	return c.JSON(http.StatusAccepted, nil)
 }
+
+func (ctr *BookshelfController) FindReviews(c outputport.Context) error {
+	bookID := c.QueryParam("book_id")
+	id, err := strconv.Atoi(bookID)
+	if err != nil {
+		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", bookID, err))
+	}
+
+	ctr.reviewInputport
+}

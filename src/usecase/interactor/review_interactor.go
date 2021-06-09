@@ -35,3 +35,7 @@ func (r *reviewInteractor) UpdateReview(userID int, review entity.Review) error 
 func (r *reviewInteractor) DeleteReviewByID(userID int, id int) error {
 	return r.reviewRepo.DeleteReviewByID(userID, id)
 }
+
+func (r *reviewInteractor) FindReviewByBookID(id int) (entity.Reviews, error) {
+	return r.reviewRepo.FindReviewByBookID(id)
+}
