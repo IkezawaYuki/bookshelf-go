@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/IkezawaYuki/bookshelf-go/src/domain/aggregate"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/inputport"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/outputport"
@@ -142,4 +143,35 @@ func (ctr *BookshelfController) FindReviews(c outputport.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, reviews)
+}
+
+func (ctr *BookshelfController) BookIndex(c outputport.Context) error {
+	return nil
+}
+
+func (ctr *BookshelfController) BookShow(c outputport.Context) error {
+	bookID := c.QueryParam("id")
+	id, err := strconv.Atoi(bookID)
+	if err != nil {
+		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", bookID, err))
+		return err
+	}
+
+	book, err := ctr.bookInputport.FindBookByID(id)
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	reviews, err := ctr.reviewInputport.FindReviewByBookID(book.ID)
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	var bookDf aggregate.BookDf
+	bookDf.Book = book
+	bookDf.Reviews = reviews
+
+	return c.JSON(http.StatusOK, bookDf)
 }
