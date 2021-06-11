@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/aggregate"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
+	"github.com/IkezawaYuki/bookshelf-go/src/logger"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/inputport"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/outputport"
 	"net/http"
@@ -16,6 +17,7 @@ type BookshelfController struct {
 	reviewInputport  inputport.ReviewInputPort
 	shelfInputport   inputport.ShelfInputPort
 	userInputport    inputport.UserInputPort
+	presenter        outputport.OutputPort
 }
 
 func NewBookshelfController(
@@ -43,7 +45,7 @@ func (ctr *BookshelfController) GetVersion(c outputport.Context) error {
 }
 
 func (ctr *BookshelfController) GetBooks(c outputport.Context) error {
-	panic("implement")
+	return c.JSON(http.StatusOK, "book")
 }
 
 // GetBook 本の取得
@@ -55,7 +57,8 @@ func (ctr *BookshelfController) GetBooks(c outputport.Context) error {
 // @Success 200 {object} entity.Book
 // @Router /book/{id} [get]
 func (ctr *BookshelfController) GetBook(c outputport.Context) error {
-	bookID := c.QueryParam("id")
+	logger.Info("GetBook is invoked")
+	bookID := c.Param("id")
 	id, err := strconv.Atoi(bookID)
 	if err != nil {
 		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", bookID, err))

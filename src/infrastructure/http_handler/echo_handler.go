@@ -1,7 +1,6 @@
 package http_handler
 
 import (
-	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/auth"
 	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/redis"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/controller"
 	"github.com/IkezawaYuki/bookshelf-go/src/registry"
@@ -103,11 +102,15 @@ func StartApp() {
 	/*
 		認証が必要なAPI
 	*/
-	g := e.Group("v1")
-	g.Use(auth.AuthGuard())
+	g := e.Group("/v1")
+	//g.Use(auth.AuthGuard())
 
-	g.GET("/book/{id}", func(c echo.Context) error {
+	g.GET("/book/:id", func(c echo.Context) error {
 		return bookShelfCtr.GetBook(c)
+	})
+
+	g.GET("/books", func(c echo.Context) error {
+		return bookShelfCtr.GetBooks(c)
 	})
 
 	g.POST("/book", func(c echo.Context) error {
@@ -118,7 +121,7 @@ func StartApp() {
 		return bookShelfCtr.UpdateBook(c)
 	})
 
-	g.DELETE("/book/{id}", func(c echo.Context) error {
+	g.DELETE("/book/:id", func(c echo.Context) error {
 		return bookShelfCtr.DeleteBook(c)
 	})
 
