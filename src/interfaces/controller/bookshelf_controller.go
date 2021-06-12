@@ -160,8 +160,8 @@ func (ctr *BookshelfController) BookIndex(c outputport.Context) error {
 	return nil
 }
 
-func (ctr *BookshelfController) BookShow(c outputport.Context) error {
-	logger.Info("BookShow is invoked")
+func (ctr *BookshelfController) ShowBook(c outputport.Context) error {
+	logger.Info("ShowBook is invoked")
 
 	bookID := c.Param("id")
 	id, err := strconv.Atoi(bookID)
@@ -183,4 +183,38 @@ func (ctr *BookshelfController) BookShow(c outputport.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, ctr.presenter.ConvertBook(book, reviews))
+}
+
+func (ctr *BookshelfController) ShowUser(c outputport.Context) error {
+	logger.Info("ShowUser is invoked")
+
+	userID := c.Param("id")
+	id, err := strconv.Atoi(userID)
+	if err != nil {
+		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", userID, err).Error())
+		return err
+	}
+
+	user, err := ctr.userInputport.FindUserByID(id)
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err.Error())
+		return err
+	}
+
+	return c.JSON(http.StatusOK, ctr.presenter.ConvertUser(user))
+}
+
+func (ctr *BookshelfController) GetUsers(c outputport.Context) error {
+	logger.Info("GetUsers is invoked")
+
+	users, err := ctr.userInputport.FindAllUser()
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, ctr.presenter.ConvertUsers(users))
+}
+
+func (ctr *BookshelfController) OutputUsersReport(c outputport.Context) error {
+	panic("implement me")
 }

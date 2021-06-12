@@ -123,11 +123,23 @@ func StartApp() {
 	})
 
 	g.GET("/book/detail/:id", func(c echo.Context) error {
-		return bookShelfCtr.BookShow(c)
+		return bookShelfCtr.ShowBook(c)
 	})
 
 	g.DELETE("/book/:id", func(c echo.Context) error {
 		return bookShelfCtr.DeleteBook(c)
+	})
+
+	g.GET("/user/detail/:id", func(c echo.Context) error {
+		return bookShelfCtr.ShowUser(c)
+	})
+
+	g.GET("/users", func(c echo.Context) error {
+		return bookShelfCtr.GetUsers(c)
+	})
+
+	g.GET("/users/report", func(c echo.Context) error {
+		return bookShelfCtr.OutputUsersReport(c)
 	})
 
 	go func() {

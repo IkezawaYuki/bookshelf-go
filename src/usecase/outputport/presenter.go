@@ -7,6 +7,8 @@ import (
 
 type Presenter interface {
 	ConvertBook(book *entity.Book, reviews entity.Reviews) *BookDetail
+	ConvertUser(user *entity.User) *UserDetail
+	ConvertUsers(user entity.Users) UserDetails
 }
 
 func NewPresenter() Presenter {
@@ -33,6 +35,26 @@ func (p *presenter) ConvertBook(book *entity.Book, reviews entity.Reviews) *Book
 		detail.Reviews = append(detail.Reviews, rev)
 	}
 	return &detail
+}
+
+func (p *presenter) ConvertUser(user *entity.User) *UserDetail {
+	var u UserDetail
+	u.ID = user.ID
+	u.Name = user.Name
+	u.Gender = user.GetGender()
+	u.BirthDate = user.BirthDate.Format("2006-01-02")
+	u.Email = user.Email
+	u.Occupation = user.OccupationName
+	u.Address = user.AddressName
+	return &u
+}
+
+func (p *presenter) ConvertUsers(users entity.Users) UserDetails {
+	var result UserDetails
+	for _, u := range users {
+		result = append(result, p.ConvertUser(u))
+	}
+	return result
 }
 
 type BookDetail struct {
@@ -62,4 +84,16 @@ type BookIndex struct {
 	Author      string    `json:"author"`
 	DateOfIssue time.Time `json:"date_of_issue"`
 	Price       float64   `json:"price"`
+}
+
+type UserDetails []*UserDetail
+
+type UserDetail struct {
+	ID         int    `json:"id"`
+	Name       string `json:"name"`
+	Gender     string `json:"gender"`
+	BirthDate  string `json:"birth_date"`
+	Email      string `json:"email"`
+	Occupation string `json:"occupation,omitempty"`
+	Address    string `json:"address,omitempty"`
 }
