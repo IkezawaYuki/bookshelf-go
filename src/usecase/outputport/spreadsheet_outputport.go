@@ -1,12 +1,12 @@
 package outputport
 
 type SpreadsheetOutputPort interface {
-	DataOutput(data Data) error
+	OutputOneSheet(refreshToken, filename string, data Data) (string, error)
+	OutputTwoOrMoreSheet(refreshToken, filename string, data []Data) (string, error)
 }
 
 type Data interface {
 	Header() []string
-	Cells() [][]string
+	Cells() [][]interface{}
 	SheetName() string
-	FileName() string
 }

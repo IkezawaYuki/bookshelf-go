@@ -1,6 +1,9 @@
 package entity
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Users []*User
 
@@ -37,17 +40,28 @@ func (u Users) Header() []string {
 		"職業名称",
 		"都道府県コード",
 		"都道府県名称",
+		"更新日",
 	}
 }
 
-func (u Users) Cells() [][]string {
-	panic("implement me")
+func (u Users) Cells() [][]interface{} {
+	var cells [][]interface{}
+	for _, user := range u {
+		row := make([]interface{}, 0)
+		row = append(row, fmt.Sprintf("%d", user.ID))
+		row = append(row, user.Name)
+		row = append(row, user.BirthDate.Format("2006-01-02"))
+		row = append(row, user.Email)
+		row = append(row, user.OccupationCode)
+		row = append(row, user.OccupationName)
+		row = append(row, user.AddressCode)
+		row = append(row, user.AddressName)
+		row = append(row, user.UpdateDate.Format("2006-01-02 15:04:05"))
+		cells = append(cells, row)
+	}
+	return cells
 }
 
 func (u Users) SheetName() string {
-	panic("implement me")
-}
-
-func (u Users) FileName() string {
-	panic("implement me")
+	return fmt.Sprintf("ユーザー情報_%s", CurrentTimeJST().Format("20060102"))
 }

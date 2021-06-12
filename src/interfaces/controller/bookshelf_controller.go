@@ -11,12 +11,13 @@ import (
 )
 
 type BookshelfController struct {
-	bookInputport    inputport.BookInputPort
-	commentInputport inputport.CommentInputPort
-	reviewInputport  inputport.ReviewInputPort
-	shelfInputport   inputport.ShelfInputPort
-	userInputport    inputport.UserInputPort
-	presenter        outputport.Presenter
+	bookInputport     inputport.BookInputPort
+	commentInputport  inputport.CommentInputPort
+	reviewInputport   inputport.ReviewInputPort
+	shelfInputport    inputport.ShelfInputPort
+	userInputport     inputport.UserInputPort
+	presenter         outputport.Presenter
+	spreadsheetClient outputport.SpreadsheetOutputPort
 }
 
 func NewBookshelfController(
@@ -26,14 +27,16 @@ func NewBookshelfController(
 	shelfInputport inputport.ShelfInputPort,
 	userInputport inputport.UserInputPort,
 	presenter outputport.Presenter,
+	spreadsheetClient outputport.SpreadsheetOutputPort,
 ) BookshelfController {
 	return BookshelfController{
-		bookInputport:    bookInputport,
-		commentInputport: commentInputport,
-		reviewInputport:  reviewInputport,
-		shelfInputport:   shelfInputport,
-		userInputport:    userInputport,
-		presenter:        presenter,
+		bookInputport:     bookInputport,
+		commentInputport:  commentInputport,
+		reviewInputport:   reviewInputport,
+		shelfInputport:    shelfInputport,
+		userInputport:     userInputport,
+		presenter:         presenter,
+		spreadsheetClient: spreadsheetClient,
 	}
 }
 
@@ -210,11 +213,28 @@ func (ctr *BookshelfController) GetUsers(c outputport.Context) error {
 	users, err := ctr.userInputport.FindAllUser()
 	if err != nil {
 		_ = c.JSON(http.StatusInternalServerError, err.Error())
+		return err
 	}
 
 	return c.JSON(http.StatusOK, ctr.presenter.ConvertUsers(users))
 }
 
 func (ctr *BookshelfController) OutputUsersReport(c outputport.Context) error {
-	panic("implement me")
+	logger.Info("OutputUsersReport is invoked")
+
+	refreshToken := c.Get("refresh_token").(string)
+
+	users, err := ctr.userInputport.FindAllUser()
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err.Error())
+		return err
+	}
+
+	url, err := ctr.spreadsheetClient.OutputOneSheet(refreshToken, "filename", users)
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err.Error())
+		return err
+	}
+
+	return c.JSON(http.StatusOK, url)
 }
