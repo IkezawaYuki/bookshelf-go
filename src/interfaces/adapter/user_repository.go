@@ -154,7 +154,7 @@ from users where email = ? and delete_flag = 0`
 }
 
 func (r *userRepository) FindUserByEmail(email string) (*entity.User, error) {
-	query := r.getFindUserByIDQuery()
+	query := r.getFindUserByEmailQuery()
 	row := r.handler.QueryRow(query, email)
 	var user entity.User
 	err := row.Scan(

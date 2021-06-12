@@ -1,6 +1,7 @@
 package http_handler
 
 import (
+	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/auth"
 	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/redis"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/controller"
 	"github.com/IkezawaYuki/bookshelf-go/src/registry"
@@ -103,7 +104,7 @@ func StartApp() {
 		認証が必要なAPI
 	*/
 	g := e.Group("/v1")
-	//g.Use(auth.AuthGuard())
+	g.Use(auth.Guard())
 
 	g.GET("/book/:id", func(c echo.Context) error {
 		return bookShelfCtr.GetBook(c)

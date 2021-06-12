@@ -80,6 +80,13 @@ func (ctr *BookshelfController) GetBook(c outputport.Context) error {
 	return c.JSON(http.StatusOK, book)
 }
 
+// RegisterBook 本の登録
+// @Title RegisterBook
+// @Description 本の登録
+// @Accept json
+// @Produce json
+// @Success 200 {object} entity.Book
+// @Router /book [post]
 func (ctr *BookshelfController) RegisterBook(c outputport.Context) error {
 	var book entity.Book
 	err := c.Bind(book)
