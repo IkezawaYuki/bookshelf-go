@@ -24,6 +24,34 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/book/{id}": {
+            "get": {
+                "description": "idによる本の取得",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "本のID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Book"
+                        }
+                    }
+                }
+            }
+        },
         "/version": {
             "get": {
                 "summary": "バージョン情報を文字列で返す",
@@ -34,6 +62,52 @@ var doc = `{
                             "type": "string"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entity.Book": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "createDate": {
+                    "type": "string"
+                },
+                "createUserID": {
+                    "type": "integer"
+                },
+                "dateOfIssue": {
+                    "type": "string"
+                },
+                "deleteDate": {
+                    "type": "string"
+                },
+                "deleteFlag": {
+                    "type": "integer"
+                },
+                "deleteUserID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "publisher": {
+                    "type": "string"
+                },
+                "updateDate": {
+                    "type": "string"
+                },
+                "updateUserID": {
+                    "type": "integer"
                 }
             }
         }

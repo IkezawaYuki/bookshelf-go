@@ -19,7 +19,11 @@ import (
 func StartApp() {
 	gomniauth.SetSecurityKey(os.Getenv("SECURITY_KEY"))
 	gomniauth.WithProviders(
-		google.New(os.Getenv("CLIENT_ID"), os.Getenv("CLIENT_SECRET"), os.Getenv("REDIRECT_URL")),
+		google.New(
+			os.Getenv("CLIENT_ID"),
+			os.Getenv("CLIENT_SECRET"),
+			os.Getenv("REDIRECT_URL"),
+		),
 	)
 	container, err := registry.NewContainer()
 	if err != nil {
@@ -78,15 +82,15 @@ func StartApp() {
 	/*
 		認証API
 	*/
-	e.GET("v1/auth/login", func(c echo.Context) error {
+	e.GET("/v1/auth/login", func(c echo.Context) error {
 		return authCtr.Login(c)
 	})
 
-	e.GET("v1/auth/callback", func(c echo.Context) error {
+	e.GET("/v1/auth/callback", func(c echo.Context) error {
 		return authCtr.Callback(c)
 	})
 
-	e.GET("v1/auth/logout", func(c echo.Context) error {
+	e.GET("/v1/auth/logout", func(c echo.Context) error {
 		key := c.Request().Header.Get(echo.HeaderAuthorization)
 		key = strings.ReplaceAll(key, "Bearer ", "")
 		if key == "" {
@@ -99,11 +103,31 @@ func StartApp() {
 	/*
 		認証が必要なAPI
 	*/
-	g := e.Group("v1")
-	g.Use(auth.AuthGuard())
+	g := e.Group("/v1")
+	g.Use(auth.Guard())
 
-	g.GET("/book/{id}", func(c echo.Context) error {
-		return nil
+	g.GET("/book/:id", func(c echo.Context) error {
+		return bookShelfCtr.GetBook(c)
+	})
+
+	g.GET("/books", func(c echo.Context) error {
+		return bookShelfCtr.GetBooks(c)
+	})
+
+	g.POST("/book", func(c echo.Context) error {
+		return bookShelfCtr.RegisterBook(c)
+	})
+
+	g.PATCH("/book", func(c echo.Context) error {
+		return bookShelfCtr.UpdateBook(c)
+	})
+
+	g.GET("/book/detail/:id", func(c echo.Context) error {
+		return bookShelfCtr.BookShow(c)
+	})
+
+	g.DELETE("/book/:id", func(c echo.Context) error {
+		return bookShelfCtr.DeleteBook(c)
 	})
 
 	go func() {

@@ -1,10 +1,58 @@
 basePath: /v1
+definitions:
+  entity.Book:
+    properties:
+      author:
+        type: string
+      createDate:
+        type: string
+      createUserID:
+        type: integer
+      dateOfIssue:
+        type: string
+      deleteDate:
+        type: string
+      deleteFlag:
+        type: integer
+      deleteUserID:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      publisher:
+        type: string
+      updateDate:
+        type: string
+      updateUserID:
+        type: integer
+    type: object
 info:
   contact: {}
   description: 読書●ーターを参考にした下位互換API
   title: bookshelf-api
   version: 0.0.0
 paths:
+  /book/{id}:
+    get:
+      consumes:
+      - application/json
+      description: idによる本の取得
+      parameters:
+      - description: 本のID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Book'
   /version:
     get:
       responses:

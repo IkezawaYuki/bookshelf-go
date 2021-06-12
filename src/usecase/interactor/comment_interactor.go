@@ -2,33 +2,36 @@ package interactor
 
 import (
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
-	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/adapter"
+	"github.com/IkezawaYuki/bookshelf-go/src/domain/repository"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/inputport"
 )
 
 type commentInteractor struct {
+	commentRepo repository.CommentRepository
 }
 
-func NewCommentInteractor() inputport.CommentInputPort {
-	return &commentInteractor{}
+func NewCommentInteractor(repo repository.CommentRepository) inputport.CommentInputPort {
+	return &commentInteractor{
+		commentRepo: repo,
+	}
 }
 
 func (c *commentInteractor) FindAllComment() (entity.Comments, error) {
-	return adapter.CommentRepo.FindAllComment()
+	return c.commentRepo.FindAllComment()
 }
 
 func (c *commentInteractor) FindCommentByID(id int) (*entity.Comment, error) {
-	return adapter.CommentRepo.FindCommentByID(id)
+	return c.commentRepo.FindCommentByID(id)
 }
 
-func (c *commentInteractor) CreateComment(userID int, book entity.Comment) (*entity.Comment, error) {
-	panic("implement me")
+func (c *commentInteractor) CreateComment(userID int, comment entity.Comment) (*entity.Comment, error) {
+	return c.commentRepo.CreateComment(userID, comment)
 }
 
-func (c *commentInteractor) UpdateComment(userID int, book entity.Comment) error {
-	panic("implement me")
+func (c *commentInteractor) UpdateComment(userID int, comment entity.Comment) error {
+	return c.commentRepo.UpdateComment(userID, comment)
 }
 
 func (c *commentInteractor) DeleteCommentByID(userID int, id int) error {
-	panic("implement me")
+	return c.commentRepo.DeleteCommentByID(userID, id)
 }

@@ -6,15 +6,13 @@ import (
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
 )
 
-func NewUserRepository(handler datastore.DBHandler) {
-	UserRepo = &userRepository{handler: handler}
+func NewUserRepository(handler datastore.DBHandler) repository.UserRepository {
+	return &userRepository{handler: handler}
 }
 
 type userRepository struct {
 	handler datastore.DBHandler
 }
-
-var UserRepo repository.UserRepository
 
 func (r *userRepository) getFindAllUserQuery() string {
 	return `select name, gender, birthday, email, occupation_code, address_code
@@ -156,7 +154,7 @@ from users where email = ? and delete_flag = 0`
 }
 
 func (r *userRepository) FindUserByEmail(email string) (*entity.User, error) {
-	query := r.getFindUserByIDQuery()
+	query := r.getFindUserByEmailQuery()
 	row := r.handler.QueryRow(query, email)
 	var user entity.User
 	err := row.Scan(

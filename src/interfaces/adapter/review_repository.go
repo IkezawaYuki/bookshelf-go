@@ -6,18 +6,16 @@ import (
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
 )
 
-func NewReviewRepository(handler datastore.DBHandler) {
-	ReviewRepo = &reviewRepository{handler: handler}
+func NewReviewRepository(handler datastore.DBHandler) repository.ReviewRepository {
+	return &reviewRepository{handler: handler}
 }
 
 type reviewRepository struct {
 	handler datastore.DBHandler
 }
 
-var ReviewRepo repository.ReviewRepository
-
 func (r *reviewRepository) getFindAllReviewQuery() string {
-	return `select id, book_id, content, reading_date from reviews where delete_flag = 0`
+	return `select id, book_id, title, content, reading_date from reviews where delete_flag = 0`
 }
 
 func (r *reviewRepository) FindAllReview() (entity.Reviews, error) {
@@ -35,6 +33,7 @@ func (r *reviewRepository) FindAllReview() (entity.Reviews, error) {
 		if err := rows.Scan(
 			&review.ID,
 			&review.BookID,
+			&review.Title,
 			&review.Content,
 			&review.ReadingDate,
 		); err != nil {
@@ -46,7 +45,7 @@ func (r *reviewRepository) FindAllReview() (entity.Reviews, error) {
 }
 
 func (r *reviewRepository) getFindReviewByIDQuery() string {
-	return `select id, book_id, content, reading_date from reviews where id = ? and delete_flag = 0`
+	return `select id, book_id, title, content, reading_date from reviews where id = ? and delete_flag = 0`
 }
 
 func (r *reviewRepository) FindReviewByID(id int) (*entity.Review, error) {
@@ -56,6 +55,7 @@ func (r *reviewRepository) FindReviewByID(id int) (*entity.Review, error) {
 	err := row.Scan(
 		&review.ID,
 		&review.BookID,
+		&review.Title,
 		&review.Content,
 		&review.ReadingDate,
 	)
@@ -63,13 +63,14 @@ func (r *reviewRepository) FindReviewByID(id int) (*entity.Review, error) {
 }
 
 func (r *reviewRepository) getCreateReviewQuery() string {
-	return `INSERT INTO reviews (book_id, content, reading_date, create_user_id) VALUES (?, ?, ?, ?)`
+	return `INSERT INTO reviews (book_id, title, content, reading_date, create_user_id) VALUES (?, ?, ?, ?)`
 }
 
 func (r *reviewRepository) CreateReview(userID int, review entity.Review) (*entity.Review, error) {
 	query := r.getCreateReviewQuery()
 	result, err := r.handler.Exec(query,
 		review.BookID,
+		review.Title,
 		review.Content,
 		review.ReadingDate,
 		userID,
@@ -88,6 +89,7 @@ func (r *reviewRepository) CreateReview(userID int, review entity.Review) (*enti
 func (r *reviewRepository) getUpdateReviewQuery() string {
 	return `UPDATE reviews SET
 book_id = ?,
+title = ?,
 content = ?,
 reading_date = ?,
 create_user_id = ?
@@ -98,6 +100,7 @@ func (r *reviewRepository) UpdateReview(userID int, review entity.Review) error 
 	query := r.getUpdateReviewQuery()
 	_, err := r.handler.Exec(query,
 		review.BookID,
+		review.Title,
 		review.Content,
 		review.ReadingDate,
 		userID,
@@ -133,6 +136,7 @@ func (r *reviewRepository) getFindByBookIDQuery() string {
 	return `select 
 id,
 book_id,
+title,
 content,
 reading_date
 from reviews
@@ -154,6 +158,7 @@ func (r *reviewRepository) FindReviewByBookID(id int) (entity.Reviews, error) {
 		if err := rows.Scan(
 			&review.ID,
 			&review.BookID,
+			&review.Title,
 			&review.Content,
 			&review.ReadingDate,
 		); err != nil {

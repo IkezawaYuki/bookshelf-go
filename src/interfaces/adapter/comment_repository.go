@@ -6,11 +6,9 @@ import (
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
 )
 
-func NewCommentRepository(handler datastore.DBHandler) {
-	CommentRepo = &commentRepository{handler: handler}
+func NewCommentRepository(handler datastore.DBHandler) repository.CommentRepository {
+	return &commentRepository{handler: handler}
 }
-
-var CommentRepo repository.CommentRepository
 
 type commentRepository struct {
 	handler datastore.DBHandler

@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func AuthGuard() echo.MiddlewareFunc {
+func Guard() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			auth := c.Request().Header.Get("Authorization")
@@ -24,7 +24,8 @@ func AuthGuard() echo.MiddlewareFunc {
 			if token == nil {
 				return c.JSON(401, "login required")
 			}
-			return nil
+
+			return next(c)
 		}
 	}
 }

@@ -1,6 +1,8 @@
 package repository
 
-import "github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
+import (
+	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
+)
 
 type BookRepository interface {
 	FindAllBook() (entity.Books, error)

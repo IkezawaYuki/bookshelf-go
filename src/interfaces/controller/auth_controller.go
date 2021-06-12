@@ -41,7 +41,7 @@ func (a *AuthController) Login(c outputport.Context) error {
 		os.Getenv("SECURITY_KEY"),
 		oauth2.AccessTypeOffline,
 		oauth2.ApprovalForce)
-	return c.JSON(http.StatusOK, loginURL)
+	return c.Redirect(http.StatusTemporaryRedirect, loginURL)
 }
 
 func (a *AuthController) Callback(c outputport.Context) error {
@@ -86,7 +86,7 @@ func (a *AuthController) Callback(c outputport.Context) error {
 	token := model.Token{
 		AccessToken:  fmt.Sprint(credentials.Get("access_token")),
 		RefreshToken: fmt.Sprint(credentials.Get("refresh_token")),
-		Email:        bookshelfUser.Email,
+		Email:        user.Email(),
 		UserID:       bookshelfUser.ID,
 	}
 
@@ -101,7 +101,7 @@ func (a *AuthController) Callback(c outputport.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, nil)
+	return c.JSON(http.StatusOK, key)
 }
 
 func (a *AuthController) Logout(c outputport.Context) error {
