@@ -2,7 +2,6 @@ package controller
 
 import (
 	"fmt"
-	"github.com/IkezawaYuki/bookshelf-go/src/domain/aggregate"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
 	"github.com/IkezawaYuki/bookshelf-go/src/logger"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/inputport"
@@ -17,7 +16,7 @@ type BookshelfController struct {
 	reviewInputport  inputport.ReviewInputPort
 	shelfInputport   inputport.ShelfInputPort
 	userInputport    inputport.UserInputPort
-	presenter        outputport.OutputPort
+	presenter        outputport.Presenter
 }
 
 func NewBookshelfController(
@@ -26,6 +25,7 @@ func NewBookshelfController(
 	reviewInputport inputport.ReviewInputPort,
 	shelfInputport inputport.ShelfInputPort,
 	userInputport inputport.UserInputPort,
+	presenter outputport.Presenter,
 ) BookshelfController {
 	return BookshelfController{
 		bookInputport:    bookInputport,
@@ -33,6 +33,7 @@ func NewBookshelfController(
 		reviewInputport:  reviewInputport,
 		shelfInputport:   shelfInputport,
 		userInputport:    userInputport,
+		presenter:        presenter,
 	}
 }
 
@@ -61,18 +62,18 @@ func (ctr *BookshelfController) GetBook(c outputport.Context) error {
 	bookID := c.Param("id")
 	id, err := strconv.Atoi(bookID)
 	if err != nil {
-		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", bookID, err))
+		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", bookID, err).Error())
 		return err
 	}
 
 	book, err := ctr.bookInputport.FindBookByID(id)
 	if err != nil {
-		_ = c.JSON(http.StatusInternalServerError, err)
+		_ = c.JSON(http.StatusInternalServerError, err.Error())
 		return err
 	}
 
 	if book == nil {
-		_ = c.JSON(http.StatusNotFound, fmt.Errorf("id :%d", id))
+		_ = c.JSON(http.StatusNotFound, fmt.Errorf("id :%d", id).Error())
 		return err
 	}
 
@@ -83,14 +84,14 @@ func (ctr *BookshelfController) RegisterBook(c outputport.Context) error {
 	var book entity.Book
 	err := c.Bind(book)
 	if err != nil {
-		_ = c.JSON(http.StatusBadRequest, err)
+		_ = c.JSON(http.StatusBadRequest, err.Error())
 		return err
 	}
 
 	userID := c.Get("user_id").(int)
 	insBook, err := ctr.bookInputport.CreateBook(userID, book)
 	if err != nil {
-		_ = c.JSON(http.StatusInternalServerError, err)
+		_ = c.JSON(http.StatusInternalServerError, err.Error())
 		return err
 	}
 
@@ -101,13 +102,13 @@ func (ctr *BookshelfController) UpdateBook(c outputport.Context) error {
 	var book entity.Book
 	err := c.Bind(book)
 	if err != nil {
-		_ = c.JSON(http.StatusBadRequest, err)
+		_ = c.JSON(http.StatusBadRequest, err.Error())
 		return err
 	}
 
 	userID := c.Get("user_id").(int)
 	if err := ctr.bookInputport.UpdateBook(userID, book); err != nil {
-		_ = c.JSON(http.StatusInternalServerError, err)
+		_ = c.JSON(http.StatusInternalServerError, err.Error())
 		return err
 	}
 
@@ -118,13 +119,13 @@ func (ctr *BookshelfController) DeleteBook(c outputport.Context) error {
 	bookID := c.QueryParam("id")
 	id, err := strconv.Atoi(bookID)
 	if err != nil {
-		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", bookID, err))
+		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", bookID, err).Error())
 		return err
 	}
 
 	userID := c.Get("user_id").(int)
 	if err := ctr.bookInputport.DeleteBookByID(userID, id); err != nil {
-		_ = c.JSON(http.StatusInternalServerError, err)
+		_ = c.JSON(http.StatusInternalServerError, err.Error())
 		return err
 	}
 
@@ -135,13 +136,13 @@ func (ctr *BookshelfController) FindReviews(c outputport.Context) error {
 	bookID := c.QueryParam("book_id")
 	id, err := strconv.Atoi(bookID)
 	if err != nil {
-		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", bookID, err))
+		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", bookID, err).Error())
 		return err
 	}
 
 	reviews, err := ctr.reviewInputport.FindReviewByBookID(id)
 	if err != nil {
-		_ = c.JSON(http.StatusInternalServerError, err)
+		_ = c.JSON(http.StatusInternalServerError, err.Error())
 		return err
 	}
 
@@ -153,28 +154,26 @@ func (ctr *BookshelfController) BookIndex(c outputport.Context) error {
 }
 
 func (ctr *BookshelfController) BookShow(c outputport.Context) error {
-	bookID := c.QueryParam("id")
+	logger.Info("BookShow is invoked")
+
+	bookID := c.Param("id")
 	id, err := strconv.Atoi(bookID)
 	if err != nil {
-		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", bookID, err))
+		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", bookID, err).Error())
 		return err
 	}
 
 	book, err := ctr.bookInputport.FindBookByID(id)
 	if err != nil {
-		_ = c.JSON(http.StatusInternalServerError, err)
+		_ = c.JSON(http.StatusInternalServerError, err.Error())
 		return err
 	}
 
 	reviews, err := ctr.reviewInputport.FindReviewByBookID(book.ID)
 	if err != nil {
-		_ = c.JSON(http.StatusInternalServerError, err)
+		_ = c.JSON(http.StatusInternalServerError, err.Error())
 		return err
 	}
 
-	var bookDf aggregate.BookDf
-	bookDf.Book = book
-	bookDf.Reviews = reviews
-
-	return c.JSON(http.StatusOK, bookDf)
+	return c.JSON(http.StatusOK, ctr.presenter.ConvertBook(book, reviews))
 }

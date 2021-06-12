@@ -1,6 +1,8 @@
 package entity
 
-import "time"
+import (
+	"time"
+)
 
 type Books []*Book
 
@@ -16,4 +18,13 @@ type Book struct {
 
 func (b *Book) TaxIncludedPrice() int {
 	return int(b.Price * tax)
+}
+
+func (b *Book) GetTitle() string {
+	return b.Name
+}
+
+func (b *Book) GetBody() string {
+	// todo string builder を使う
+	return b.Author
 }

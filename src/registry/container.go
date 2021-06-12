@@ -5,6 +5,7 @@ import (
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/adapter"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/controller"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/interactor"
+	"github.com/IkezawaYuki/bookshelf-go/src/usecase/outputport"
 	"github.com/sarulabs/di"
 )
 
@@ -56,12 +57,14 @@ func buildBookShelfController(ctn di.Container) (interface{}, error) {
 	reviewInputport := interactor.NewReviewInteractor(reviewRepo)
 	shelfInputport := interactor.NewShelfInteractor(shelfRepo)
 	userInputport := interactor.NewUserInteractor(userRepo)
+	presenter := outputport.NewPresenter()
 	ctr := controller.NewBookshelfController(
 		bookInputport,
 		commentInputport,
 		reviewInputport,
 		shelfInputport,
 		userInputport,
+		presenter,
 	)
 	return &ctr, nil
 }

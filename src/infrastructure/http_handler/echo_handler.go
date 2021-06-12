@@ -121,6 +121,10 @@ func StartApp() {
 		return bookShelfCtr.UpdateBook(c)
 	})
 
+	g.GET("/book/detail/:id", func(c echo.Context) error {
+		return bookShelfCtr.BookShow(c)
+	})
+
 	g.DELETE("/book/:id", func(c echo.Context) error {
 		return bookShelfCtr.DeleteBook(c)
 	})
