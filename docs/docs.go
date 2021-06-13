@@ -123,6 +123,69 @@ var doc = `{
                 }
             }
         },
+        "/user/detail/{id}": {
+            "get": {
+                "description": "ユーザー情報の取得",
+                "consumes": [
+                    "application/json"
+                ],
+                "summary": "ユーザー情報の取得",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/outputport.UserDetail"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "ユーザー情報の全員取得",
+                "consumes": [
+                    "application/json"
+                ],
+                "summary": "ユーザー情報の全員取得",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/outputport.UserDetail"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/report": {
+            "get": {
+                "description": "ユーザー情報全員のスプレッドシート出力",
+                "consumes": [
+                    "application/json"
+                ],
+                "summary": "ユーザー情報全員のスプレッドシート出力",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/version": {
             "get": {
                 "summary": "バージョン情報を文字列で返す",
@@ -227,6 +290,32 @@ var doc = `{
                     "type": "string"
                 },
                 "user": {
+                    "type": "string"
+                }
+            }
+        },
+        "outputport.UserDetail": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "birth_date": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "occupation": {
                     "type": "string"
                 }
             }
