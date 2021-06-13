@@ -24,6 +24,25 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/book": {
+            "post": {
+                "description": "本の更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Book"
+                        }
+                    }
+                }
+            }
+        },
         "/book/{id}": {
             "get": {
                 "description": "idによる本の取得",
@@ -45,6 +64,29 @@ var doc = `{
                 "responses": {
                     "200": {
                         "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Book"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "本の削除",
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
                         "schema": {
                             "$ref": "#/definitions/entity.Book"
                         }

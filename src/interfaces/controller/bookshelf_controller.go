@@ -49,11 +49,13 @@ func (ctr *BookshelfController) GetVersion(c outputport.Context) error {
 }
 
 func (ctr *BookshelfController) GetBooks(c outputport.Context) error {
+
 	return c.JSON(http.StatusOK, "book")
 }
 
 // GetBook 本の取得
 // @Title GetBook
+// @Summary idによる本の取得
 // @Description idによる本の取得
 // @Accept json
 // @Produce json
@@ -85,6 +87,7 @@ func (ctr *BookshelfController) GetBook(c outputport.Context) error {
 
 // RegisterBook 本の登録
 // @Title RegisterBook
+// @Summary 本の登録
 // @Description 本の登録
 // @Accept json
 // @Produce json
@@ -108,6 +111,14 @@ func (ctr *BookshelfController) RegisterBook(c outputport.Context) error {
 	return c.JSON(http.StatusCreated, insBook)
 }
 
+// UpdateBook 本の登録
+// @Title UpdateBook
+// @Summary 本の更新
+// @Description 本の更新
+// @Accept json
+// @Produce json
+// @Success 200 {object} entity.Book
+// @Router /book [post]
 func (ctr *BookshelfController) UpdateBook(c outputport.Context) error {
 	var book entity.Book
 	err := c.Bind(book)
@@ -125,6 +136,14 @@ func (ctr *BookshelfController) UpdateBook(c outputport.Context) error {
 	return c.JSON(http.StatusAccepted, nil)
 }
 
+// DeleteBook 本の登録
+// @Title DeleteBook
+// @Summary 本の削除
+// @Description 本の削除
+// @Accept json
+// @Param id path int true "id"
+// @Success 202 {object} entity.Book
+// @Router /book/{id} [delete]
 func (ctr *BookshelfController) DeleteBook(c outputport.Context) error {
 	bookID := c.QueryParam("id")
 	id, err := strconv.Atoi(bookID)

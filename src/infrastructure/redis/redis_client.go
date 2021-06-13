@@ -23,7 +23,7 @@ func GetRedisConnection() *redis.Client {
 	return redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_ADDR"),
 		Password: os.Getenv("REDIS_PASS"),
-		DB:       0, // use default DB
+		DB:       0,
 	})
 }
 
@@ -31,7 +31,7 @@ func init() {
 	conn := redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_ADDR"),
 		Password: os.Getenv("REDIS_PASS"),
-		DB:       0, // use default DB
+		DB:       0,
 	})
 	Handler = &client{redis: conn}
 }

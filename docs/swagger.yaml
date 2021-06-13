@@ -35,7 +35,34 @@ info:
   title: bookshelf-api
   version: 0.0.0
 paths:
+  /book:
+    post:
+      consumes:
+      - application/json
+      description: 本の更新
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Book'
   /book/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 本の削除
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/entity.Book'
     get:
       consumes:
       - application/json

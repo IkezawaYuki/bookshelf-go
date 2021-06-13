@@ -4,6 +4,7 @@ import (
 	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/auth"
 	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/redis"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/controller"
+	"github.com/IkezawaYuki/bookshelf-go/src/logger"
 	"github.com/IkezawaYuki/bookshelf-go/src/registry"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -151,7 +152,7 @@ func StartApp() {
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
+	logger.Info("Shutdown...")
 	_ = container.Clean()
 	_ = redis.Handler.Close()
-	// todo DB close
 }
