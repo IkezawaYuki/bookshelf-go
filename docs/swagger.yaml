@@ -29,6 +29,38 @@ definitions:
       updateUserID:
         type: integer
     type: object
+  outputport.BookDetail:
+    properties:
+      author:
+        type: string
+      date_of_issue:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      publisher:
+        type: string
+      reviews:
+        items:
+          $ref: '#/definitions/outputport.Review'
+        type: array
+    type: object
+  outputport.Review:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+      reading_date:
+        type: string
+      title:
+        type: string
+      user:
+        type: string
+    type: object
 info:
   contact: {}
   description: 読書●ーターを参考にした下位互換API
@@ -47,6 +79,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/entity.Book'
+      summary: 本の更新
   /book/{id}:
     delete:
       consumes:
@@ -63,6 +96,7 @@ paths:
           description: Accepted
           schema:
             $ref: '#/definitions/entity.Book'
+      summary: 本の削除
     get:
       consumes:
       - application/json
@@ -80,6 +114,24 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/entity.Book'
+      summary: idによる本の取得
+  /book/detail/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 本の詳細情報の取得
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/outputport.BookDetail'
+      summary: 本の詳細情報の取得
   /version:
     get:
       responses:

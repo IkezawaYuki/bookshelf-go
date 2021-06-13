@@ -182,6 +182,14 @@ func (ctr *BookshelfController) BookIndex(c outputport.Context) error {
 	return nil
 }
 
+// ShowBook 本の詳細情報の取得
+// @Title ShowBook
+// @Summary 本の詳細情報の取得
+// @Description 本の詳細情報の取得
+// @Accept json
+// @Param id path int true "id"
+// @Success 200 {object} outputport.BookDetail
+// @Router /book/detail/{id} [get]
 func (ctr *BookshelfController) ShowBook(c outputport.Context) error {
 	logger.Info("ShowBook is invoked")
 
