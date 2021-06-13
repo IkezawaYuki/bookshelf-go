@@ -215,6 +215,14 @@ func (ctr *BookshelfController) ShowBook(c outputport.Context) error {
 	return c.JSON(http.StatusOK, ctr.presenter.ConvertBook(book, reviews))
 }
 
+// ShowUser ユーザー情報の取得
+// @Title ShowUser
+// @Summary ユーザー情報の取得
+// @Description ユーザー情報の取得
+// @Accept json
+// @Param id path int true "id"
+// @Success 200 {object} outputport.UserDetail
+// @Router /user/detail/{id} [get]
 func (ctr *BookshelfController) ShowUser(c outputport.Context) error {
 	logger.Info("ShowUser is invoked")
 
@@ -234,6 +242,13 @@ func (ctr *BookshelfController) ShowUser(c outputport.Context) error {
 	return c.JSON(http.StatusOK, ctr.presenter.ConvertUser(user))
 }
 
+// GetUsers ユーザー情報の全員取得
+// @Title GetUsers
+// @Summary ユーザー情報の全員取得
+// @Description ユーザー情報の全員取得
+// @Accept json
+// @Success 200 {object} outputport.UserDetails
+// @Router /users [get]
 func (ctr *BookshelfController) GetUsers(c outputport.Context) error {
 	logger.Info("GetUsers is invoked")
 
@@ -246,6 +261,13 @@ func (ctr *BookshelfController) GetUsers(c outputport.Context) error {
 	return c.JSON(http.StatusOK, ctr.presenter.ConvertUsers(users))
 }
 
+// OutputUsersReport ユーザー情報全員のスプレッドシート出力
+// @Title OutputUsersReport
+// @Summary ユーザー情報全員のスプレッドシート出力
+// @Description ユーザー情報全員のスプレッドシート出力
+// @Accept json
+// @Success 200 {string} url
+// @Router /users/report [get]
 func (ctr *BookshelfController) OutputUsersReport(c outputport.Context) error {
 	logger.Info("OutputUsersReport is invoked")
 
