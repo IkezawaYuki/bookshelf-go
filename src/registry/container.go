@@ -1,9 +1,12 @@
 package registry
 
 import (
+	"database/sql"
 	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/mysql"
+	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/spreadsheet"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/adapter"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/controller"
+	"github.com/IkezawaYuki/bookshelf-go/src/logger"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/interactor"
 	"github.com/IkezawaYuki/bookshelf-go/src/usecase/outputport"
 	"github.com/sarulabs/di"
@@ -12,6 +15,10 @@ import (
 type Container struct {
 	ctn di.Container
 }
+
+var (
+	conn *sql.DB
+)
 
 func NewContainer() (*Container, error) {
 	builder, err := di.NewBuilder()
@@ -40,11 +47,14 @@ func (c *Container) Resolve(name string) interface{} {
 }
 
 func (c *Container) Clean() error {
+	if err := conn.Close(); err != nil {
+		logger.Error("close is failed", err)
+	}
 	return c.ctn.Clean()
 }
 
 func buildBookShelfController(ctn di.Container) (interface{}, error) {
-	conn := mysql.GetMySQLConnection()
+	conn = mysql.GetMySQLConnection()
 	handler := mysql.NewMySQLHandler(conn)
 	bookRepo := adapter.NewBookRepository(handler)
 	commentRepo := adapter.NewCommentRepository(handler)
@@ -58,6 +68,7 @@ func buildBookShelfController(ctn di.Container) (interface{}, error) {
 	shelfInputport := interactor.NewShelfInteractor(shelfRepo)
 	userInputport := interactor.NewUserInteractor(userRepo)
 	presenter := outputport.NewPresenter()
+	spreadsheetClient := spreadsheet.NewClient()
 	ctr := controller.NewBookshelfController(
 		bookInputport,
 		commentInputport,
@@ -65,6 +76,7 @@ func buildBookShelfController(ctn di.Container) (interface{}, error) {
 		shelfInputport,
 		userInputport,
 		presenter,
+		spreadsheetClient,
 	)
 	return &ctr, nil
 }

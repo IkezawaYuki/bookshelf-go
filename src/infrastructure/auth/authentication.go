@@ -21,10 +21,10 @@ func Guard() echo.MiddlewareFunc {
 			if err != nil {
 				return c.JSON(http.StatusInternalServerError, err)
 			}
-			if token == nil {
+			if token == nil && token.RefreshToken == "" {
 				return c.JSON(401, "login required")
 			}
-
+			c.Set("refresh_token", token.RefreshToken)
 			return next(c)
 		}
 	}

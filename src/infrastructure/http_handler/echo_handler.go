@@ -4,6 +4,7 @@ import (
 	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/auth"
 	"github.com/IkezawaYuki/bookshelf-go/src/infrastructure/redis"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/controller"
+	"github.com/IkezawaYuki/bookshelf-go/src/logger"
 	"github.com/IkezawaYuki/bookshelf-go/src/registry"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -123,11 +124,23 @@ func StartApp() {
 	})
 
 	g.GET("/book/detail/:id", func(c echo.Context) error {
-		return bookShelfCtr.BookShow(c)
+		return bookShelfCtr.ShowBook(c)
 	})
 
 	g.DELETE("/book/:id", func(c echo.Context) error {
 		return bookShelfCtr.DeleteBook(c)
+	})
+
+	g.GET("/user/detail/:id", func(c echo.Context) error {
+		return bookShelfCtr.ShowUser(c)
+	})
+
+	g.GET("/users", func(c echo.Context) error {
+		return bookShelfCtr.GetUsers(c)
+	})
+
+	g.GET("/users/report", func(c echo.Context) error {
+		return bookShelfCtr.OutputUsersReport(c)
 	})
 
 	go func() {
@@ -139,7 +152,7 @@ func StartApp() {
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
+	logger.Info("Shutdown...")
 	_ = container.Clean()
 	_ = redis.Handler.Close()
-	// todo DB close
 }

@@ -1,6 +1,7 @@
 package adapter
 
 import (
+	"database/sql"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/repository"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
@@ -15,8 +16,13 @@ type userRepository struct {
 }
 
 func (r *userRepository) getFindAllUserQuery() string {
-	return `select name, gender, birthday, email, occupation_code, address_code
-from users where delete_flag = 0`
+	return `select u.id, u.name, u.gender, u.birthday, u.email, u.occupation_code, o.name, u.address_code, a.name
+from users as u 
+left join occupation as o
+on u.occupation_code = o.code and o.delete_flag = 0
+left join address as a
+on u.address_code = a.code and a.delete_flag = 0
+where u.delete_flag = 0`
 }
 
 func (r *userRepository) FindAllUser() (entity.Users, error) {
@@ -31,38 +37,66 @@ func (r *userRepository) FindAllUser() (entity.Users, error) {
 	}()
 	for rows.Next() {
 		user := entity.User{}
+		var occupationCode sql.NullString
+		var occupationName sql.NullString
+		var addressCode sql.NullString
+		var addressName sql.NullString
 		if err := rows.Scan(
+			&user.ID,
 			&user.Name,
 			&user.Gender,
 			&user.BirthDate,
 			&user.Email,
-			&user.OccupationCode,
-			&user.AddressCode,
+			&occupationCode,
+			&occupationName,
+			&addressCode,
+			&addressName,
 		); err != nil {
 			return nil, err
 		}
+		user.OccupationCode = occupationCode.String
+		user.OccupationName = occupationName.String
+		user.AddressCode = addressCode.String
+		user.AddressName = addressName.String
 		result = append(result, &user)
 	}
 	return result, nil
 }
 
 func (r *userRepository) getFindUserByIDQuery() string {
-	return `select name, gender, birthday, email, occupation_code, address_code
-from users where id = ? and delete_flag = 0`
+	return `select u.name, u.gender, u.birthday, u.email, u.occupation_code, o.name, u.address_code, a.name
+from users as u 
+left join occupation as o
+on u.occupation_code = o.code and o.delete_flag = 0
+left join address as a
+on u.address_code = a.code and a.delete_flag = 0
+where u.id = ? and u.delete_flag = 0
+order by u.id`
 }
 
 func (r *userRepository) FindUserByID(id int) (*entity.User, error) {
 	query := r.getFindUserByIDQuery()
 	row := r.handler.QueryRow(query, id)
 	var user entity.User
+	var occupationCode sql.NullString
+	var occupationName sql.NullString
+	var addressCode sql.NullString
+	var addressName sql.NullString
 	err := row.Scan(
 		&user.Name,
 		&user.Gender,
 		&user.BirthDate,
 		&user.Email,
-		&user.OccupationCode,
-		&user.AddressCode,
+		&occupationCode,
+		&occupationName,
+		&addressCode,
+		&addressName,
 	)
+	user.ID = id
+	user.OccupationCode = occupationCode.String
+	user.OccupationName = occupationName.String
+	user.AddressCode = addressCode.String
+	user.AddressName = addressName.String
 	return &user, err
 }
 
@@ -157,13 +191,17 @@ func (r *userRepository) FindUserByEmail(email string) (*entity.User, error) {
 	query := r.getFindUserByEmailQuery()
 	row := r.handler.QueryRow(query, email)
 	var user entity.User
+	var occupationCode sql.NullString
+	var addressCode sql.NullString
 	err := row.Scan(
 		&user.ID,
 		&user.Name,
 		&user.Gender,
 		&user.BirthDate,
-		&user.OccupationCode,
-		&user.AddressCode,
+		&occupationCode,
+		&addressCode,
 	)
+	user.OccupationCode = occupationCode.String
+	user.AddressCode = addressCode.String
 	return &user, err
 }

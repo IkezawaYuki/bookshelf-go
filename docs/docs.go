@@ -24,6 +24,52 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/book": {
+            "post": {
+                "description": "本の更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "本の更新",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Book"
+                        }
+                    }
+                }
+            }
+        },
+        "/book/detail/{id}": {
+            "get": {
+                "description": "本の詳細情報の取得",
+                "consumes": [
+                    "application/json"
+                ],
+                "summary": "本の詳細情報の取得",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/outputport.BookDetail"
+                        }
+                    }
+                }
+            }
+        },
         "/book/{id}": {
             "get": {
                 "description": "idによる本の取得",
@@ -33,6 +79,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
+                "summary": "idによる本の取得",
                 "parameters": [
                     {
                         "type": "integer",
@@ -45,6 +92,30 @@ var doc = `{
                 "responses": {
                     "200": {
                         "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Book"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "本の削除",
+                "consumes": [
+                    "application/json"
+                ],
+                "summary": "本の削除",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
                         "schema": {
                             "$ref": "#/definitions/entity.Book"
                         }
@@ -108,6 +179,55 @@ var doc = `{
                 },
                 "updateUserID": {
                     "type": "integer"
+                }
+            }
+        },
+        "outputport.BookDetail": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "date_of_issue": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "publisher": {
+                    "type": "string"
+                },
+                "reviews": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/outputport.Review"
+                    }
+                }
+            }
+        },
+        "outputport.Review": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "reading_date": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string"
                 }
             }
         }
