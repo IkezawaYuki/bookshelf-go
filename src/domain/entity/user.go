@@ -7,6 +7,21 @@ import (
 
 type Users []*User
 
+func (u Users) FindUserByID(id int) *User {
+	left, right := 0, len(u)
+	for left <= right {
+		mid := (left + right) / 2
+		if u[mid].ID == id {
+			return u[mid]
+		} else if u[mid].ID < id {
+			left = mid + 1
+		} else {
+			right = mid - 1
+		}
+	}
+	return nil
+}
+
 type User struct {
 	ID             int
 	Name           string
