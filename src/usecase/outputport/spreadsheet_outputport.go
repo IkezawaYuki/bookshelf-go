@@ -6,7 +6,6 @@ type SpreadsheetOutputPort interface {
 }
 
 type Data interface {
-	Header() []string
 	Cells() [][]interface{}
 	SheetName() string
 }

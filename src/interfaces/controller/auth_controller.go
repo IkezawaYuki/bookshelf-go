@@ -109,5 +109,5 @@ func (a *AuthController) Logout(c outputport.Context) error {
 		_ = c.JSON(http.StatusInternalServerError, err.Error())
 		return err
 	}
-	return c.JSON(http.StatusOK, nil)
+	return c.JSON(http.StatusOK, "logout is success")
 }

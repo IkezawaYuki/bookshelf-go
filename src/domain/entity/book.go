@@ -23,8 +23,3 @@ func (b *Book) TaxIncludedPrice() int {
 func (b *Book) GetTitle() string {
 	return b.Name
 }
-
-func (b *Book) GetBody() string {
-	// todo string builder を使う
-	return b.Author
-}

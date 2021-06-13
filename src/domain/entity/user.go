@@ -29,8 +29,8 @@ func (u *User) GetGender() string {
 	return ""
 }
 
-func (u Users) Header() []string {
-	return []string{
+func (u Users) Header() []interface{} {
+	return []interface{}{
 		"ID",
 		"氏名",
 		"性別",
@@ -46,10 +46,12 @@ func (u Users) Header() []string {
 
 func (u Users) Cells() [][]interface{} {
 	var cells [][]interface{}
+	cells = append(cells, u.Header())
 	for _, user := range u {
 		row := make([]interface{}, 0)
 		row = append(row, fmt.Sprintf("%d", user.ID))
 		row = append(row, user.Name)
+		row = append(row, user.GetGender())
 		row = append(row, user.BirthDate.Format("2006-01-02"))
 		row = append(row, user.Email)
 		row = append(row, user.OccupationCode)

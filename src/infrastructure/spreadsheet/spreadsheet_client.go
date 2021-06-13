@@ -15,14 +15,14 @@ import (
 )
 
 type client struct {
-	ClientID    string
-	SecretValue string
+	ClientID     string
+	ClientSecret string
 }
 
 func NewClient() outputport.SpreadsheetOutputPort {
 	return &client{
-		ClientID:    os.Getenv("CLIENT_ID"),
-		SecretValue: os.Getenv("SECRET_VALUE"),
+		ClientID:     os.Getenv("CLIENT_ID"),
+		ClientSecret: os.Getenv("CLIENT_SECRET"),
 	}
 }
 
@@ -31,7 +31,7 @@ func (c *client) getClient(refreshToken string) (*http.Client, error) {
 	logger.Info("getClient is invoked")
 	values := url.Values{
 		"client_id":     {c.ClientID},
-		"client_secret": {c.SecretValue},
+		"client_secret": {c.ClientSecret},
 		"refresh_token": {refreshToken},
 		"grant_type":    {"refresh_token"},
 	}
@@ -76,7 +76,7 @@ func (c *client) OutputOneSheet(refreshToken, filename string, data outputport.D
 	go func() {
 		// 更新処理はバックグラウンド実行
 		valueReq := c.newValueRequestOneSheet(data)
-		_, updateErr := srv.Spreadsheets.Values.BatchUpdate(createResp.SpreadsheetId, valueReq).Context(ctx).Do()
+		_, updateErr := srv.Spreadsheets.Values.BatchUpdate(createResp.SpreadsheetId, valueReq).Context(context.Background()).Do()
 		if updateErr != nil {
 			logger.Error("srv.Spreadsheets.Values.BatchUpdate", err)
 			return
