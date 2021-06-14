@@ -16,8 +16,8 @@
 |  本の削除  |  /v1/book/{id} [delete] |
 |  本の詳細取得 |  /v1/book/detail/{id} [get]  |
 |  ユーザーの詳細取得 |  /v1/user/detail/{id} [get]  |
-|  ユーザーの前取得  |  /users [get]  |
-|  ユーザー情報のスプレッドシート出力 | /users/report [get]|
+|  ユーザーの前取得  |  /v1/users [get]  |
+|  ユーザー情報のスプレッドシート出力 | /v1/users/report [get]|
 
 ### Layout
 
