@@ -116,7 +116,7 @@ func StartApp() {
 	})
 
 	g.POST("/book", func(c echo.Context) error {
-		return bookShelfCtr.RegisterBook(c)
+		return bookShelfCtr.CreateBook(c)
 	})
 
 	g.PATCH("/book", func(c echo.Context) error {

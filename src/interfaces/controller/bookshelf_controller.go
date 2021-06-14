@@ -49,8 +49,14 @@ func (ctr *BookshelfController) GetVersion(c outputport.Context) error {
 }
 
 func (ctr *BookshelfController) GetBooks(c outputport.Context) error {
-
-	return c.JSON(http.StatusOK, "book")
+	books, err := ctr.bookInputport.FindAllBook()
+	if err != nil {
+		return err
+	}
+	// todo
+	fmt.Println(books)
+	fmt.Println("todo")
+	return c.JSON(http.StatusOK, "books")
 }
 
 // GetBook 本の取得
@@ -85,15 +91,15 @@ func (ctr *BookshelfController) GetBook(c outputport.Context) error {
 	return c.JSON(http.StatusOK, book)
 }
 
-// RegisterBook 本の登録
-// @Title RegisterBook
+// CreateBook 本の登録
+// @Title CreateBook
 // @Summary 本の登録
 // @Description 本の登録
 // @Accept json
 // @Produce json
 // @Success 200 {object} entity.Book
 // @Router /book [post]
-func (ctr *BookshelfController) RegisterBook(c outputport.Context) error {
+func (ctr *BookshelfController) CreateBook(c outputport.Context) error {
 	var book entity.Book
 	err := c.Bind(book)
 	if err != nil {
@@ -212,7 +218,7 @@ func (ctr *BookshelfController) ShowBook(c outputport.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, ctr.presenter.ConvertBook(book, reviews))
+	return c.JSON(http.StatusOK, ctr.presenter.ConvertBookDetail(book, reviews))
 }
 
 // ShowUser ユーザー情報の取得
@@ -286,4 +292,48 @@ func (ctr *BookshelfController) OutputUsersReport(c outputport.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, url)
+}
+
+func (ctr *BookshelfController) GetReview(c outputport.Context) error {
+	reviewID := c.Param("id")
+	id, err := strconv.Atoi(reviewID)
+	if err != nil {
+		_ = c.JSON(http.StatusBadRequest, fmt.Sprintf("err: %v, reviewID=%s", err, reviewID))
+		return err
+	}
+
+	review, err := ctr.reviewInputport.FindReviewByID(id)
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	return c.JSON(http.StatusOK, ctr.presenter.ConvertReviewDetail(review))
+}
+
+func (ctr *BookshelfController) ShowReview(c outputport.Context) error {
+	panic("implement me")
+}
+
+func (ctr *BookshelfController) GetReviews(c outputport.Context) error {
+	panic("implement me")
+}
+
+func (ctr *BookshelfController) UpdateReview(c outputport.Context) error {
+	var review entity.Review
+	err := c.Bind(review)
+	if err != nil {
+		_ = c.JSON(http.StatusBadRequest, err)
+		return err
+	}
+
+	panic("implement me")
+}
+
+func (ctr *BookshelfController) CreateReview(c outputport.Context) error {
+	panic("implement me")
+}
+
+func (ctr *BookshelfController) DeleteReview(c outputport.Context) error {
+	panic("implement me")
 }

@@ -6,9 +6,10 @@ import (
 )
 
 type Presenter interface {
-	ConvertBook(book *entity.Book, reviews entity.Reviews) *BookDetail
+	ConvertBookDetail(book *entity.Book, reviews entity.Reviews) *BookDetail
 	ConvertUser(user *entity.User) *UserDetail
 	ConvertUsers(user entity.Users) UserDetails
+	ConvertReviewDetail(review *entity.Review) *ReviewDetail
 }
 
 func NewPresenter() Presenter {
@@ -18,7 +19,7 @@ func NewPresenter() Presenter {
 type presenter struct {
 }
 
-func (p *presenter) ConvertBook(book *entity.Book, reviews entity.Reviews) *BookDetail {
+func (p *presenter) ConvertBookDetail(book *entity.Book, reviews entity.Reviews) *BookDetail {
 	var detail BookDetail
 	detail.ID = book.ID
 	detail.Name = book.Name
@@ -55,6 +56,10 @@ func (p *presenter) ConvertUsers(users entity.Users) UserDetails {
 		result = append(result, p.ConvertUser(u))
 	}
 	return result
+}
+
+func (p *presenter) ConvertReviewDetail(review *entity.Review) *ReviewDetail {
+	panic("implement me")
 }
 
 type BookDetail struct {
@@ -96,4 +101,16 @@ type UserDetail struct {
 	Email      string `json:"email"`
 	Occupation string `json:"occupation,omitempty"`
 	Address    string `json:"address,omitempty"`
+}
+
+type ReviewDetail struct {
+	ID          int       `json:"id"`
+	Title       string    `json:"title"`
+	User        string    `json:"user"`
+	Content     string    `json:"content"`
+	ReadingDate string    `json:"reading_date"`
+	Comments    []Comment `json:"comments"`
+}
+
+type Comment struct {
 }
