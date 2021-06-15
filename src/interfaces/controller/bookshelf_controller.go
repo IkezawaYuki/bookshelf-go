@@ -327,13 +327,48 @@ func (ctr *BookshelfController) UpdateReview(c outputport.Context) error {
 		return err
 	}
 
-	panic("implement me")
+	userID := c.Get("user_id").(int)
+
+	if err := ctr.reviewInputport.UpdateReview(userID, review); err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	return c.JSON(http.StatusOK, review)
 }
 
 func (ctr *BookshelfController) CreateReview(c outputport.Context) error {
-	panic("implement me")
+	var review entity.Review
+	err := c.Bind(review)
+	if err != nil {
+		_ = c.JSON(http.StatusBadRequest, err)
+		return err
+	}
+
+	userID := c.Get("user_id").(int)
+
+	insReview, err := ctr.reviewInputport.CreateReview(userID, review)
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	return c.JSON(http.StatusCreated, insReview)
 }
 
 func (ctr *BookshelfController) DeleteReview(c outputport.Context) error {
-	panic("implement me")
+	reviewID := c.QueryParam("id")
+	id, err := strconv.Atoi(reviewID)
+	if err != nil {
+		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("reviewID=%s, err=%v", reviewID, err).Error())
+		return err
+	}
+
+	userID := c.Get("user_id").(int)
+	if err := ctr.reviewInputport.DeleteReviewByID(userID, id); err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err.Error())
+		return err
+	}
+
+	return c.JSON(http.StatusAccepted, nil)
 }
