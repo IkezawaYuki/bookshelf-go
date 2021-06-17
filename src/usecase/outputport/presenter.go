@@ -7,9 +7,10 @@ import (
 
 type Presenter interface {
 	ConvertBookDetail(book *entity.Book, reviews entity.Reviews) *BookDetail
-	ConvertUser(user *entity.User) *UserDetail
-	ConvertUsers(user entity.Users) UserDetails
-	ConvertReviewDetail(review *entity.Review) *ReviewDetail
+	ConvertUser(user *entity.User) *User
+	ConvertUsers(user entity.Users) Users
+	ConvertReview(review *entity.Review) *Review
+	ConvertReviewDetail(review *entity.Review, comments entity.Comments) *ReviewDetail
 }
 
 func NewPresenter() Presenter {
@@ -38,8 +39,8 @@ func (p *presenter) ConvertBookDetail(book *entity.Book, reviews entity.Reviews)
 	return &detail
 }
 
-func (p *presenter) ConvertUser(user *entity.User) *UserDetail {
-	var u UserDetail
+func (p *presenter) ConvertUser(user *entity.User) *User {
+	var u User
 	u.ID = user.ID
 	u.Name = user.Name
 	u.Gender = user.GetGender()
@@ -50,15 +51,19 @@ func (p *presenter) ConvertUser(user *entity.User) *UserDetail {
 	return &u
 }
 
-func (p *presenter) ConvertUsers(users entity.Users) UserDetails {
-	var result UserDetails
+func (p *presenter) ConvertUsers(users entity.Users) Users {
+	var result Users
 	for _, u := range users {
 		result = append(result, p.ConvertUser(u))
 	}
 	return result
 }
 
-func (p *presenter) ConvertReviewDetail(review *entity.Review) *ReviewDetail {
+func (p *presenter) ConvertReview(review *entity.Review) *Review {
+	panic("implement me")
+}
+
+func (p *presenter) ConvertReviewDetail(review *entity.Review, comments entity.Comments) *ReviewDetail {
 	panic("implement me")
 }
 
@@ -91,9 +96,9 @@ type BookIndex struct {
 	Price       float64   `json:"price"`
 }
 
-type UserDetails []*UserDetail
+type Users []*User
 
-type UserDetail struct {
+type User struct {
 	ID         int    `json:"id"`
 	Name       string `json:"name"`
 	Gender     string `json:"gender"`

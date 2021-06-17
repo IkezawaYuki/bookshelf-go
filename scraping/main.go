@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"golang.org/x/sync/errgroup"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -31,16 +32,40 @@ func newDB() *sql.DB {
 const insertSql string = `insert into books values(name, publisher, author, date_of_issue, price, create_user_id, create_date) 
 (?, ?, ?, ?, ?, 1, now())`
 
+const maxProcess int = 20
+
 func main() {
 	urls := []string{"", "", "", "", "", "", "", ""}
 
-	db := newDB()
-	var eg errgroup.Group
-	eg.Go(func() error {
+	urlChan := make(chan string, len(urls))
 
-		_, err := db.Exec(insertSql)
-		return err
-	})
+	//db := newDB()
+	var eg errgroup.Group
+
+	for i := 0; i < maxProcess; i++ {
+		eg.Go(func() error {
+			for url := range urlChan {
+				resp, err := http.Get(url)
+				if err != nil {
+					return err
+				}
+
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					return err
+				}
+				_ = resp.Body.Close()
+
+				fmt.Println(string(body))
+				//_, err = db.Exec(insertSql)
+				//if err != nil {
+				//	return err
+				//}
+				//return err
+			}
+			return nil
+		})
+	}
 
 	if err := eg.Wait(); err != nil {
 		fmt.Println(err)

@@ -227,7 +227,7 @@ func (ctr *BookshelfController) ShowBook(c outputport.Context) error {
 // @Description ユーザー情報の取得
 // @Accept json
 // @Param id path int true "id"
-// @Success 200 {object} outputport.UserDetail
+// @Success 200 {object} outputport.User
 // @Router /user/detail/{id} [get]
 func (ctr *BookshelfController) ShowUser(c outputport.Context) error {
 	logger.Info("ShowUser is invoked")
@@ -253,7 +253,7 @@ func (ctr *BookshelfController) ShowUser(c outputport.Context) error {
 // @Summary ユーザー情報の全員取得
 // @Description ユーザー情報の全員取得
 // @Accept json
-// @Success 200 {object} outputport.UserDetails
+// @Success 200 {object} outputport.Users
 // @Router /users [get]
 func (ctr *BookshelfController) GetUsers(c outputport.Context) error {
 	logger.Info("GetUsers is invoked")
@@ -308,11 +308,30 @@ func (ctr *BookshelfController) GetReview(c outputport.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, ctr.presenter.ConvertReviewDetail(review))
+	return c.JSON(http.StatusOK, ctr.presenter.ConvertReview(review))
 }
 
 func (ctr *BookshelfController) ShowReview(c outputport.Context) error {
-	panic("implement me")
+	reviewID := c.Param("id")
+	id, err := strconv.Atoi(reviewID)
+	if err != nil {
+		_ = c.JSON(http.StatusBadRequest, err)
+		return err
+	}
+
+	review, err := ctr.reviewInputport.FindReviewByID(id)
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	comments, err := ctr.commentInputport.FindCommentByReviewID(id)
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	return c.JSON(http.StatusOK, ctr.presenter.ConvertReviewDetail(review, comments))
 }
 
 func (ctr *BookshelfController) GetReviews(c outputport.Context) error {

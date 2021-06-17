@@ -35,3 +35,7 @@ func (c *commentInteractor) UpdateComment(userID int, comment entity.Comment) er
 func (c *commentInteractor) DeleteCommentByID(userID int, id int) error {
 	return c.commentRepo.DeleteCommentByID(userID, id)
 }
+
+func (c *commentInteractor) FindCommentByReviewID(id int) (entity.Comments, error) {
+	return c.commentRepo.FindCommentByReviewID(id)
+}

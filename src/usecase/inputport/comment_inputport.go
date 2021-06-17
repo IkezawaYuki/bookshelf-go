@@ -8,4 +8,5 @@ type CommentInputPort interface {
 	CreateComment(userID int, book entity.Comment) (*entity.Comment, error)
 	UpdateComment(userID int, book entity.Comment) error
 	DeleteCommentByID(userID int, id int) error
+	FindCommentByReviewID(id int) (entity.Comments, error)
 }
