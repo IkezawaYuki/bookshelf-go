@@ -6,9 +6,11 @@ import (
 )
 
 type Presenter interface {
-	ConvertBook(book *entity.Book, reviews entity.Reviews) *BookDetail
-	ConvertUser(user *entity.User) *UserDetail
-	ConvertUsers(user entity.Users) UserDetails
+	ConvertBookDetail(book *entity.Book, reviews entity.Reviews) *BookDetail
+	ConvertUser(user *entity.User) *User
+	ConvertUsers(user entity.Users) Users
+	ConvertReview(review *entity.Review) *Review
+	ConvertReviewDetail(review *entity.Review, comments entity.Comments) *ReviewDetail
 }
 
 func NewPresenter() Presenter {
@@ -18,7 +20,7 @@ func NewPresenter() Presenter {
 type presenter struct {
 }
 
-func (p *presenter) ConvertBook(book *entity.Book, reviews entity.Reviews) *BookDetail {
+func (p *presenter) ConvertBookDetail(book *entity.Book, reviews entity.Reviews) *BookDetail {
 	var detail BookDetail
 	detail.ID = book.ID
 	detail.Name = book.Name
@@ -37,8 +39,8 @@ func (p *presenter) ConvertBook(book *entity.Book, reviews entity.Reviews) *Book
 	return &detail
 }
 
-func (p *presenter) ConvertUser(user *entity.User) *UserDetail {
-	var u UserDetail
+func (p *presenter) ConvertUser(user *entity.User) *User {
+	var u User
 	u.ID = user.ID
 	u.Name = user.Name
 	u.Gender = user.GetGender()
@@ -49,12 +51,26 @@ func (p *presenter) ConvertUser(user *entity.User) *UserDetail {
 	return &u
 }
 
-func (p *presenter) ConvertUsers(users entity.Users) UserDetails {
-	var result UserDetails
+func (p *presenter) ConvertUsers(users entity.Users) Users {
+	var result Users
 	for _, u := range users {
 		result = append(result, p.ConvertUser(u))
 	}
 	return result
+}
+
+func (p *presenter) ConvertReview(review *entity.Review) *Review {
+	return &Review{
+		ID:          review.ID,
+		Title:       review.Title,
+		User:        "todo",
+		Content:     review.Content,
+		ReadingDate: review.ReadingDate.Format("2006-01-02"),
+	}
+}
+
+func (p *presenter) ConvertReviewDetail(review *entity.Review, comments entity.Comments) *ReviewDetail {
+	panic("implement me")
 }
 
 type BookDetail struct {
@@ -86,9 +102,9 @@ type BookIndex struct {
 	Price       float64   `json:"price"`
 }
 
-type UserDetails []*UserDetail
+type Users []*User
 
-type UserDetail struct {
+type User struct {
 	ID         int    `json:"id"`
 	Name       string `json:"name"`
 	Gender     string `json:"gender"`
@@ -96,4 +112,16 @@ type UserDetail struct {
 	Email      string `json:"email"`
 	Occupation string `json:"occupation,omitempty"`
 	Address    string `json:"address,omitempty"`
+}
+
+type ReviewDetail struct {
+	ID          int       `json:"id"`
+	Title       string    `json:"title"`
+	User        string    `json:"user"`
+	Content     string    `json:"content"`
+	ReadingDate string    `json:"reading_date"`
+	Comments    []Comment `json:"comments"`
+}
+
+type Comment struct {
 }

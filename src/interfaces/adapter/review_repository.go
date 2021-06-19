@@ -15,7 +15,18 @@ type reviewRepository struct {
 }
 
 func (r *reviewRepository) getFindAllReviewQuery() string {
-	return `select id, book_id, title, content, reading_date from reviews where delete_flag = 0`
+	return `select 
+r.id,
+r.book_id,
+u.id,
+u.name,
+r.title,
+r.content,
+r.reading_date
+from reviews as r
+left join users as u
+on r.create_user_id = u.id
+order by r.id`
 }
 
 func (r *reviewRepository) FindAllReview() (entity.Reviews, error) {
@@ -45,7 +56,19 @@ func (r *reviewRepository) FindAllReview() (entity.Reviews, error) {
 }
 
 func (r *reviewRepository) getFindReviewByIDQuery() string {
-	return `select id, book_id, title, content, reading_date from reviews where id = ? and delete_flag = 0`
+	return `select 
+r.id,
+r.book_id,
+u.id,
+u.name,
+r.title,
+r.content,
+r.reading_date
+from reviews as r
+left join users as u
+on r.create_user_id = u.id
+where r.id = ?
+order by r.id`
 }
 
 func (r *reviewRepository) FindReviewByID(id int) (*entity.Review, error) {
@@ -55,6 +78,8 @@ func (r *reviewRepository) FindReviewByID(id int) (*entity.Review, error) {
 	err := row.Scan(
 		&review.ID,
 		&review.BookID,
+		&review.UserID,
+		&review.UserName,
 		&review.Title,
 		&review.Content,
 		&review.ReadingDate,
@@ -134,13 +159,18 @@ func (r *reviewRepository) DeleteReviewByID(userID int, id int) error {
 
 func (r *reviewRepository) getFindByBookIDQuery() string {
 	return `select 
-id,
-book_id,
-title,
-content,
-reading_date
-from reviews
-where book_id = ?`
+r.id,
+r.book_id,
+u.id,
+u.name,
+r.title,
+r.content,
+r.reading_date
+from reviews as r
+left join users as u
+on r.create_user_id = u.id
+where book_id = ?
+order by r.id`
 }
 
 func (r *reviewRepository) FindReviewByBookID(id int) (entity.Reviews, error) {
@@ -158,6 +188,8 @@ func (r *reviewRepository) FindReviewByBookID(id int) (entity.Reviews, error) {
 		if err := rows.Scan(
 			&review.ID,
 			&review.BookID,
+			&review.UserID,
+			&review.UserName,
 			&review.Title,
 			&review.Content,
 			&review.ReadingDate,
