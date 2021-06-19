@@ -60,7 +60,13 @@ func (p *presenter) ConvertUsers(users entity.Users) Users {
 }
 
 func (p *presenter) ConvertReview(review *entity.Review) *Review {
-	panic("implement me")
+	return &Review{
+		ID:          review.ID,
+		Title:       review.Title,
+		User:        "todo",
+		Content:     review.Content,
+		ReadingDate: review.ReadingDate.Format("2006-01-02"),
+	}
 }
 
 func (p *presenter) ConvertReviewDetail(review *entity.Review, comments entity.Comments) *ReviewDetail {
