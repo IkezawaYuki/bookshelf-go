@@ -410,4 +410,10 @@ func (ctr *BookshelfController) UpdateComment(c outputport.Context) error {
 }
 
 func (ctr *BookshelfController) DeleteComment(c outputport.Context) error {
+	commentID := c.Param("id")
+	id, err := strconv.Atoi(commentID)
+	if err != nil {
+		_ = c.JSON(http.StatusBadRequest, err)
+		return err
+	}
 }
