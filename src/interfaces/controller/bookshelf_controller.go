@@ -30,12 +30,13 @@ func NewBookshelfController(
 	spreadsheetClient outputport.SpreadsheetOutputPort,
 ) BookshelfController {
 	return BookshelfController{
-		bookInputport:     bookInputport,
-		commentInputport:  commentInputport,
-		reviewInputport:   reviewInputport,
-		shelfInputport:    shelfInputport,
-		userInputport:     userInputport,
-		presenter:         presenter,
+		bookInputport:    bookInputport,
+		commentInputport: commentInputport,
+		reviewInputport:  reviewInputport,
+		shelfInputport:   shelfInputport,
+		userInputport:    userInputport,
+		presenter:        presenter,
+
 		spreadsheetClient: spreadsheetClient,
 	}
 }
@@ -390,4 +391,23 @@ func (ctr *BookshelfController) DeleteReview(c outputport.Context) error {
 	}
 
 	return c.JSON(http.StatusAccepted, nil)
+}
+
+func (ctr *BookshelfController) GetComment(c outputport.Context) error {
+	panic("implement me")
+}
+
+func (ctr *BookshelfController) GetComments(c outputport.Context) error {
+	panic("implement me")
+}
+
+func (ctr *BookshelfController) CreateComment(c outputport.Context) error {
+	panic("implement me")
+}
+
+func (ctr *BookshelfController) UpdateComment(c outputport.Context) error {
+	panic("implement me")
+}
+
+func (ctr *BookshelfController) DeleteComment(c outputport.Context) error {
 }
