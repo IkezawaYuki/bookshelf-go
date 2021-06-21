@@ -3,6 +3,8 @@ package model
 import (
 	"bytes"
 	"fmt"
+	"runtime"
+	"strings"
 )
 
 const (
@@ -53,4 +55,12 @@ func (e *BsError) Error() string {
 		buf.WriteString(e.Message)
 	}
 	return buf.String()
+}
+
+func GetMethodName() string {
+	pc, _, _, _ := runtime.Caller(1)
+	fn := runtime.FuncForPC(pc)
+	fileAry := strings.Split(fn.Name(), "/")
+	methodName := fileAry[len(fileAry)-1]
+	return methodName
 }
