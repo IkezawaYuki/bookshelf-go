@@ -394,7 +394,20 @@ func (ctr *BookshelfController) DeleteReview(c outputport.Context) error {
 }
 
 func (ctr *BookshelfController) GetComment(c outputport.Context) error {
-	panic("implement me")
+	commentID := c.Param("id")
+	id, err := strconv.Atoi(commentID)
+	if err != nil {
+		_ = c.JSON(http.StatusBadRequest, err)
+		return err
+	}
+
+	comment, err := ctr.commentInputport.FindCommentByID(id)
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	return c.JSON(http.StatusAccepted, ctr.presenter.ConvertComment(comment))
 }
 
 func (ctr *BookshelfController) GetComments(c outputport.Context) error {
@@ -402,11 +415,36 @@ func (ctr *BookshelfController) GetComments(c outputport.Context) error {
 }
 
 func (ctr *BookshelfController) CreateComment(c outputport.Context) error {
-	panic("implement me")
+	var comment entity.Comment
+	if err := c.Bind(comment); err != nil {
+		_ = c.JSON(http.StatusBadRequest, err)
+		return err
+	}
+
+	userID := c.Get("user_id").(int)
+	insComment, err := ctr.commentInputport.CreateComment(userID, comment)
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	return c.JSON(http.StatusOK, insComment)
 }
 
 func (ctr *BookshelfController) UpdateComment(c outputport.Context) error {
-	panic("implement me")
+	var comment entity.Comment
+	if err := c.Bind(comment); err != nil {
+		_ = c.JSON(http.StatusBadRequest, err)
+		return err
+	}
+
+	userID := c.Get("user_id").(int)
+	if err := ctr.commentInputport.UpdateComment(userID, comment); err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	return c.JSON(http.StatusOK, nil)
 }
 
 func (ctr *BookshelfController) DeleteComment(c outputport.Context) error {
@@ -416,4 +454,12 @@ func (ctr *BookshelfController) DeleteComment(c outputport.Context) error {
 		_ = c.JSON(http.StatusBadRequest, err)
 		return err
 	}
+
+	userID := c.Get("user_id").(int)
+	if err := ctr.commentInputport.DeleteCommentByID(userID, id); err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	return c.JSON(http.StatusAccepted, nil)
 }

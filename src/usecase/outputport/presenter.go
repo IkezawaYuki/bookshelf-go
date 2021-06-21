@@ -11,6 +11,7 @@ type Presenter interface {
 	ConvertUsers(user entity.Users) Users
 	ConvertReview(review *entity.Review) *Review
 	ConvertReviewDetail(review *entity.Review, comments entity.Comments) *ReviewDetail
+	ConvertComment(comment *entity.Comment) *Comment
 }
 
 func NewPresenter() Presenter {
@@ -73,6 +74,15 @@ func (p *presenter) ConvertReviewDetail(review *entity.Review, comments entity.C
 	panic("implement me")
 }
 
+func (p *presenter) ConvertComment(comment *entity.Comment) *Comment {
+	return &Comment{
+		ID:       comment.ID,
+		ReviewID: comment.ReviewID,
+		UserID:   comment.UserID,
+		Content:  comment.Content,
+	}
+}
+
 type BookDetail struct {
 	ID          int      `json:"id"`
 	Name        string   `json:"name"`
@@ -124,4 +134,8 @@ type ReviewDetail struct {
 }
 
 type Comment struct {
+	ID       int    `json:"id"`
+	ReviewID int    `json:"review_id"`
+	UserID   int    `json:"user_id"`
+	Content  string `json:"content"`
 }
