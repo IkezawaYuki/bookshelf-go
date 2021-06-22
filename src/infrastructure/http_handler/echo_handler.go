@@ -163,6 +163,18 @@ func StartApp() {
 		return bookShelfCtr.GetComment(c)
 	})
 
+	g.POST("/comment", func(c echo.Context) error {
+		return bookShelfCtr.CreateComment(c)
+	})
+
+	g.PATCH("/comment", func(c echo.Context) error {
+		return bookShelfCtr.UpdateComment(c)
+	})
+
+	g.DELETE("/comment/:id", func(c echo.Context) error {
+		return bookShelfCtr.DeleteComment(c)
+	})
+
 	go func() {
 		if err := e.Start(":8080"); err != nil {
 			panic(err)

@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"github.com/IkezawaYuki/bookshelf-go/src/domain/model"
 	"time"
 )
 
@@ -8,7 +9,7 @@ type Books []*Book
 
 type Book struct {
 	ID          int
-	Name        string
+	Name        model.Name
 	Publisher   string
 	Author      string
 	DateOfIssue time.Time
@@ -21,5 +22,5 @@ func (b *Book) TaxIncludedPrice() int {
 }
 
 func (b *Book) GetTitle() string {
-	return b.Name
+	return string(b.Name)
 }
