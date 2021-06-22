@@ -8,7 +8,10 @@ import (
 )
 
 const (
-	EINTERNAL = "internal"
+	EINTERNAL   = "internal"
+	EINVALID    = "invalid"
+	EPERMISSION = "permission denied"
+	EOUTOFBOUND = "out of bound"
 )
 
 type BsError struct {

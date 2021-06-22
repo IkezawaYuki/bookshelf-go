@@ -143,6 +143,26 @@ func StartApp() {
 		return bookShelfCtr.OutputUsersReport(c)
 	})
 
+	g.GET("/review/:id", func(c echo.Context) error {
+		return bookShelfCtr.GetReview(c)
+	})
+
+	g.POST("/review", func(c echo.Context) error {
+		return bookShelfCtr.CreateReview(c)
+	})
+
+	g.PATCH("/review", func(c echo.Context) error {
+		return bookShelfCtr.UpdateReview(c)
+	})
+
+	g.DELETE("/review/:id", func(c echo.Context) error {
+		return bookShelfCtr.DeleteReview(c)
+	})
+
+	g.GET("/comment/:id", func(c echo.Context) error {
+		return bookShelfCtr.GetComment(c)
+	})
+
 	go func() {
 		if err := e.Start(":8080"); err != nil {
 			panic(err)
