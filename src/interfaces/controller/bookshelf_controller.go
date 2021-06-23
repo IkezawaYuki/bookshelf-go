@@ -295,6 +295,15 @@ func (ctr *BookshelfController) OutputUsersReport(c outputport.Context) error {
 	return c.JSON(http.StatusOK, url)
 }
 
+// GetReview レビューの取得
+// @Title GetReview
+// @Summary idによるレビューの取得
+// @Description idによるレビューの取得
+// @Accept json
+// @Produce json
+// @Param id path int true "レビューのID"
+// @Success 200 {object} outputport.Review
+// @Router /review/{id} [get]
 func (ctr *BookshelfController) GetReview(c outputport.Context) error {
 	reviewID := c.Param("id")
 	id, err := strconv.Atoi(reviewID)
@@ -393,6 +402,15 @@ func (ctr *BookshelfController) DeleteReview(c outputport.Context) error {
 	return c.JSON(http.StatusAccepted, nil)
 }
 
+// GetComment コメントの取得
+// @Title GetComment
+// @Summary idによるコメントの取得
+// @Description idによるコメントの取得
+// @Accept json
+// @Produce json
+// @Param id path int true "コメントのID"
+// @Success 200 {object} outputport.Comment
+// @Router /comment/{id} [get]
 func (ctr *BookshelfController) GetComment(c outputport.Context) error {
 	commentID := c.Param("id")
 	id, err := strconv.Atoi(commentID)

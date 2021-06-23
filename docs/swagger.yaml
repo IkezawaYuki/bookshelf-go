@@ -48,6 +48,17 @@ definitions:
           $ref: '#/definitions/outputport.Review'
         type: array
     type: object
+  outputport.Comment:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+      review_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
   outputport.Review:
     properties:
       content:
@@ -61,7 +72,7 @@ definitions:
       user:
         type: string
     type: object
-  outputport.UserDetail:
+  outputport.User:
     properties:
       address:
         type: string
@@ -149,6 +160,44 @@ paths:
           schema:
             $ref: '#/definitions/outputport.BookDetail'
       summary: 本の詳細情報の取得
+  /comment/{id}:
+    get:
+      consumes:
+      - application/json
+      description: idによるコメントの取得
+      parameters:
+      - description: コメントのID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/outputport.Comment'
+      summary: idによるコメントの取得
+  /review/{id}:
+    get:
+      consumes:
+      - application/json
+      description: idによるレビューの取得
+      parameters:
+      - description: レビューのID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/outputport.Review'
+      summary: idによるレビューの取得
   /user/detail/{id}:
     get:
       consumes:
@@ -164,7 +213,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/outputport.UserDetail'
+            $ref: '#/definitions/outputport.User'
       summary: ユーザー情報の取得
   /users:
     get:
@@ -176,7 +225,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/outputport.UserDetail'
+              $ref: '#/definitions/outputport.User'
             type: array
       summary: ユーザー情報の全員取得
   /users/report:

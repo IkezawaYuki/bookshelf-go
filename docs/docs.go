@@ -123,6 +123,64 @@ var doc = `{
                 }
             }
         },
+        "/comment/{id}": {
+            "get": {
+                "description": "idによるコメントの取得",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "idによるコメントの取得",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "コメントのID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/outputport.Comment"
+                        }
+                    }
+                }
+            }
+        },
+        "/review/{id}": {
+            "get": {
+                "description": "idによるレビューの取得",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "idによるレビューの取得",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "レビューのID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/outputport.Review"
+                        }
+                    }
+                }
+            }
+        },
         "/user/detail/{id}": {
             "get": {
                 "description": "ユーザー情報の取得",
@@ -143,7 +201,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/outputport.UserDetail"
+                            "$ref": "#/definitions/outputport.User"
                         }
                     }
                 }
@@ -162,7 +220,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/outputport.UserDetail"
+                                "$ref": "#/definitions/outputport.User"
                             }
                         }
                     }
@@ -274,6 +332,23 @@ var doc = `{
                 }
             }
         },
+        "outputport.Comment": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "review_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "outputport.Review": {
             "type": "object",
             "properties": {
@@ -294,7 +369,7 @@ var doc = `{
                 }
             }
         },
-        "outputport.UserDetail": {
+        "outputport.User": {
             "type": "object",
             "properties": {
                 "address": {

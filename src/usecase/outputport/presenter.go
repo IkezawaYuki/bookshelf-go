@@ -24,7 +24,7 @@ type presenter struct {
 func (p *presenter) ConvertBookDetail(book *entity.Book, reviews entity.Reviews) *BookDetail {
 	var detail BookDetail
 	detail.ID = book.ID
-	detail.Name = book.Name
+	detail.Name = string(book.Name)
 	detail.Publisher = book.Publisher
 	detail.Author = book.Author
 	detail.DateOfIssue = book.DateOfIssue.Format("2006-01-02")
