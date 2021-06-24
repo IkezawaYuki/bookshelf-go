@@ -10,6 +10,8 @@ import (
 	"strconv"
 )
 
+//todo helthcheck
+
 type BookshelfController struct {
 	bookInputport     inputport.BookInputPort
 	commentInputport  inputport.CommentInputPort
@@ -39,6 +41,10 @@ func NewBookshelfController(
 
 		spreadsheetClient: spreadsheetClient,
 	}
+}
+
+func (ctr *BookshelfController) HealthCheck(c outputport.Context) error {
+	return c.JSON(http.StatusOK, "healthy")
 }
 
 // GetVersion バージョン情報の取得

@@ -107,6 +107,10 @@ func StartApp() {
 	g := e.Group("/v1")
 	g.Use(auth.Guard())
 
+	g.GET("/healthcheck", func(c echo.Context) error {
+		return bookShelfCtr.HealthCheck(c)
+	})
+
 	g.GET("/book/:id", func(c echo.Context) error {
 		return bookShelfCtr.GetBook(c)
 	})
