@@ -115,10 +115,7 @@ var doc = `{
                 ],
                 "responses": {
                     "202": {
-                        "description": "Accepted",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Book"
-                        }
+                        "description": ""
                     }
                 }
             }

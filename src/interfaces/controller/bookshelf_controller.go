@@ -56,7 +56,14 @@ func (ctr *BookshelfController) GetVersion(c outputport.Context) error {
 }
 
 func (ctr *BookshelfController) GetBooks(c outputport.Context) error {
-	books, err := ctr.bookInputport.FindAllBook()
+	queryPage := c.QueryParam("page")
+	page := 1
+	if queryPage != "" {
+		page, _ = strconv.Atoi(queryPage)
+	}
+	name := c.QueryParam("search")
+
+	books, err := ctr.bookInputport.FindAllBook(page, name)
 	if err != nil {
 		return err
 	}
@@ -155,7 +162,7 @@ func (ctr *BookshelfController) UpdateBook(c outputport.Context) error {
 // @Description 本の削除
 // @Accept json
 // @Param id path int true "id"
-// @Success 202 {object} entity.Book
+// @Success 202
 // @Router /book/{id} [delete]
 func (ctr *BookshelfController) DeleteBook(c outputport.Context) error {
 	bookID := c.QueryParam("id")
@@ -391,6 +398,14 @@ func (ctr *BookshelfController) CreateReview(c outputport.Context) error {
 	return c.JSON(http.StatusCreated, insReview)
 }
 
+// DeleteReview レビューの登録
+// @Title DeleteReview
+// @Summary レビューの削除
+// @Description レビューの削除
+// @Accept json
+// @Param id path int true "id"
+// @Success 202
+// @Router /review/{id} [delete]
 func (ctr *BookshelfController) DeleteReview(c outputport.Context) error {
 	reviewID := c.QueryParam("id")
 	id, err := strconv.Atoi(reviewID)
@@ -471,6 +486,14 @@ func (ctr *BookshelfController) UpdateComment(c outputport.Context) error {
 	return c.JSON(http.StatusOK, nil)
 }
 
+// DeleteComment コメントの登録
+// @Title DeleteComment
+// @Summary コメントの削除
+// @Description コメントの削除
+// @Accept json
+// @Param id path int true "id"
+// @Success 202
+// @Router /comment/{id} [delete]
 func (ctr *BookshelfController) DeleteComment(c outputport.Context) error {
 	commentID := c.Param("id")
 	id, err := strconv.Atoi(commentID)

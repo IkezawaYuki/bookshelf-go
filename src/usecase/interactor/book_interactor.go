@@ -16,8 +16,8 @@ func NewBookInteractor(repo repository.BookRepository) inputport.BookInputPort {
 	}
 }
 
-func (b *bookInteractor) FindAllBook() (entity.Books, error) {
-	return b.bookRepo.FindAllBook()
+func (b *bookInteractor) FindAllBook(page int, search string) (entity.Books, error) {
+	return b.bookRepo.FindAllBook(page, search)
 }
 
 func (b *bookInteractor) FindBookByID(id int) (*entity.Book, error) {

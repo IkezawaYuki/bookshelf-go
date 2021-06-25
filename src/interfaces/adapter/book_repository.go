@@ -26,7 +26,7 @@ price
 FROM books WHERE delete_flag = 0`
 }
 
-func (b *bookRepository) FindAllBook() (entity.Books, error) {
+func (b *bookRepository) FindAllBook(page int, search string) (entity.Books, error) {
 	result := make(entity.Books, 0)
 	query := b.getFindAllBookQuery()
 	rows, err := b.handler.Query(query)

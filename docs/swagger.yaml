@@ -121,9 +121,7 @@ paths:
         type: integer
       responses:
         "202":
-          description: Accepted
-          schema:
-            $ref: '#/definitions/entity.Book'
+          description: ""
       summary: 本の削除
     get:
       consumes:
