@@ -151,6 +151,10 @@ func StartApp() {
 		return bookShelfCtr.GetReview(c)
 	})
 
+	g.GET("/reviews/:book_id", func(c echo.Context) error {
+		return bookShelfCtr.FindReviews(c)
+	})
+
 	g.POST("/review", func(c echo.Context) error {
 		return bookShelfCtr.CreateReview(c)
 	})

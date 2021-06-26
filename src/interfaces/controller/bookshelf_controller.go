@@ -10,8 +10,6 @@ import (
 	"strconv"
 )
 
-//todo helthcheck
-
 type BookshelfController struct {
 	bookInputport     inputport.BookInputPort
 	commentInputport  inputport.CommentInputPort
