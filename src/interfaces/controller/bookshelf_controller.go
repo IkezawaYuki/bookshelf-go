@@ -65,10 +65,7 @@ func (ctr *BookshelfController) GetBooks(c outputport.Context) error {
 	if err != nil {
 		return err
 	}
-	// todo
-	fmt.Println(books)
-	fmt.Println("todo")
-	return c.JSON(http.StatusOK, "books")
+	return c.JSON(http.StatusOK, ctr.presenter.ConvertBooks(books))
 }
 
 // GetBook 本の取得
@@ -359,6 +356,14 @@ func (ctr *BookshelfController) GetReviews(c outputport.Context) error {
 	panic("implement me")
 }
 
+// UpdateReview レビューの登録
+// @Title UpdateReview
+// @Summary レビューの更新
+// @Description レビューの更新
+// @Accept json
+// @Produce json
+// @Success 200 {object} entity.Review
+// @Router /review [post]
 func (ctr *BookshelfController) UpdateReview(c outputport.Context) error {
 	var review entity.Review
 	err := c.Bind(review)

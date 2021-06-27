@@ -7,6 +7,8 @@ import (
 
 type Presenter interface {
 	ConvertBookDetail(book *entity.Book, reviews entity.Reviews) *BookDetail
+	ConvertBook(book *entity.Book) *Book
+	ConvertBooks(books entity.Books) Books
 	ConvertUser(user *entity.User) *User
 	ConvertUsers(user entity.Users) Users
 	ConvertReview(review *entity.Review) *Review
@@ -19,6 +21,32 @@ func NewPresenter() Presenter {
 }
 
 type presenter struct {
+}
+
+func (p *presenter) ConvertBooks(books entity.Books) Books {
+	var result Books
+	for _, b := range books {
+		result = append(result, Book{
+			ID:          b.ID,
+			Name:        string(b.Name),
+			Publisher:   b.Publisher,
+			Author:      b.Author,
+			DateOfIssue: b.DateOfIssue.Format("2006-01-02"),
+			Price:       b.Price,
+		})
+	}
+	return result
+}
+
+func (p *presenter) ConvertBook(book *entity.Book) *Book {
+	return &Book{
+		ID:          book.ID,
+		Name:        string(book.Name),
+		Publisher:   book.Publisher,
+		Author:      book.Author,
+		DateOfIssue: book.DateOfIssue.Format("2006-01-02"),
+		Price:       book.Price,
+	}
 }
 
 func (p *presenter) ConvertBookDetail(book *entity.Book, reviews entity.Reviews) *BookDetail {
@@ -83,6 +111,17 @@ func (p *presenter) ConvertComment(comment *entity.Comment) *Comment {
 	}
 }
 
+type Books []Book
+
+type Book struct {
+	ID          int     `json:"id"`
+	Name        string  `json:"name"`
+	Publisher   string  `json:"publisher"`
+	Author      string  `json:"author"`
+	DateOfIssue string  `json:"date_of_issue"`
+	Price       float64 `json:"price"`
+}
+
 type BookDetail struct {
 	ID          int      `json:"id"`
 	Name        string   `json:"name"`
@@ -101,7 +140,7 @@ type Review struct {
 	ReadingDate string `json:"reading_date"`
 }
 
-type Books []BookIndex
+type BooksIndex []BookIndex
 
 type BookIndex struct {
 	ID          int       `json:"id"`
