@@ -107,6 +107,10 @@ func StartApp() {
 	g := e.Group("/v1")
 	g.Use(auth.Guard())
 
+	g.GET("/healthcheck", func(c echo.Context) error {
+		return bookShelfCtr.HealthCheck(c)
+	})
+
 	g.GET("/book/:id", func(c echo.Context) error {
 		return bookShelfCtr.GetBook(c)
 	})
@@ -141,6 +145,42 @@ func StartApp() {
 
 	g.GET("/users/report", func(c echo.Context) error {
 		return bookShelfCtr.OutputUsersReport(c)
+	})
+
+	g.GET("/review/:id", func(c echo.Context) error {
+		return bookShelfCtr.GetReview(c)
+	})
+
+	g.GET("/reviews/:book_id", func(c echo.Context) error {
+		return bookShelfCtr.FindReviews(c)
+	})
+
+	g.POST("/review", func(c echo.Context) error {
+		return bookShelfCtr.CreateReview(c)
+	})
+
+	g.PATCH("/review", func(c echo.Context) error {
+		return bookShelfCtr.UpdateReview(c)
+	})
+
+	g.DELETE("/review/:id", func(c echo.Context) error {
+		return bookShelfCtr.DeleteReview(c)
+	})
+
+	g.GET("/comment/:id", func(c echo.Context) error {
+		return bookShelfCtr.GetComment(c)
+	})
+
+	g.POST("/comment", func(c echo.Context) error {
+		return bookShelfCtr.CreateComment(c)
+	})
+
+	g.PATCH("/comment", func(c echo.Context) error {
+		return bookShelfCtr.UpdateComment(c)
+	})
+
+	g.DELETE("/comment/:id", func(c echo.Context) error {
+		return bookShelfCtr.DeleteComment(c)
 	})
 
 	go func() {

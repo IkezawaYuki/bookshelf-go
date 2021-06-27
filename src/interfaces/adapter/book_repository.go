@@ -1,6 +1,7 @@
 package adapter
 
 import (
+	"fmt"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/repository"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
@@ -23,13 +24,20 @@ publisher,
 author,
 date_of_issue,
 price
-FROM books WHERE delete_flag = 0`
+FROM books WHERE delete_flag = 0 %s
+LIMIT 20 OFFSET ?`
 }
 
-func (b *bookRepository) FindAllBook() (entity.Books, error) {
+func (b *bookRepository) FindAllBook(page int, search string) (entity.Books, error) {
 	result := make(entity.Books, 0)
 	query := b.getFindAllBookQuery()
-	rows, err := b.handler.Query(query)
+	if search == "" {
+		query = fmt.Sprintf(query, "")
+	} else {
+		query = fmt.Sprintf(query, "AND name like '%"+search+"%'")
+	}
+
+	rows, err := b.handler.Query(query, (page-1)*20)
 	if err != nil {
 		return nil, err
 	}
