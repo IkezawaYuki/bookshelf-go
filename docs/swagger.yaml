@@ -29,6 +29,37 @@ definitions:
       updateUserID:
         type: integer
     type: object
+  entity.Review:
+    properties:
+      bookID:
+        type: integer
+      content:
+        type: string
+      createDate:
+        type: string
+      createUserID:
+        type: integer
+      deleteDate:
+        type: string
+      deleteFlag:
+        type: integer
+      deleteUserID:
+        type: integer
+      id:
+        type: integer
+      readingDate:
+        type: string
+      title:
+        type: string
+      updateDate:
+        type: string
+      updateUserID:
+        type: integer
+      userID:
+        type: integer
+      userName:
+        type: string
+    type: object
   outputport.BookDetail:
     properties:
       author:
@@ -61,6 +92,23 @@ definitions:
     type: object
   outputport.Review:
     properties:
+      content:
+        type: string
+      id:
+        type: integer
+      reading_date:
+        type: string
+      title:
+        type: string
+      user:
+        type: string
+    type: object
+  outputport.ReviewDetail:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/outputport.Comment'
+        type: array
       content:
         type: string
       id:
@@ -158,7 +206,44 @@ paths:
           schema:
             $ref: '#/definitions/outputport.BookDetail'
       summary: 本の詳細情報の取得
+  /comment:
+    patch:
+      consumes:
+      - application/json
+      description: コメントの更新
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: コメントの更新
+    post:
+      consumes:
+      - application/json
+      description: コメントの登録
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/outputport.Comment'
+      summary: コメントの登録
   /comment/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: コメントの削除
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "202":
+          description: ""
+      summary: コメントの削除
     get:
       consumes:
       - application/json
@@ -177,7 +262,46 @@ paths:
           schema:
             $ref: '#/definitions/outputport.Comment'
       summary: idによるコメントの取得
+  /review:
+    patch:
+      consumes:
+      - application/json
+      description: レビューの更新
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Review'
+      summary: レビューの更新
+    post:
+      consumes:
+      - application/json
+      description: レビューの登録
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/outputport.Review'
+      summary: レビューの登録
   /review/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: レビューの削除
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "202":
+          description: ""
+      summary: レビューの削除
     get:
       consumes:
       - application/json
@@ -196,6 +320,23 @@ paths:
           schema:
             $ref: '#/definitions/outputport.Review'
       summary: idによるレビューの取得
+  /review/detail/{id}:
+    get:
+      consumes:
+      - application/json
+      description: レビュー詳細情報の取得
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/outputport.ReviewDetail'
+      summary: レビュー詳細情報の取得
   /user/detail/{id}:
     get:
       consumes:

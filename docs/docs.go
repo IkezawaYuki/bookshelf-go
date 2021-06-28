@@ -120,6 +120,41 @@ var doc = `{
                 }
             }
         },
+        "/comment": {
+            "post": {
+                "description": "コメントの登録",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "コメントの登録",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/outputport.Comment"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "コメントの更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "コメントの更新",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/comment/{id}": {
             "get": {
                 "description": "idによるコメントの取得",
@@ -144,6 +179,91 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/outputport.Comment"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "コメントの削除",
+                "consumes": [
+                    "application/json"
+                ],
+                "summary": "コメントの削除",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/review": {
+            "post": {
+                "description": "レビューの登録",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "レビューの登録",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/outputport.Review"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "レビューの更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "レビューの更新",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Review"
+                        }
+                    }
+                }
+            }
+        },
+        "/review/detail/{id}": {
+            "get": {
+                "description": "レビュー詳細情報の取得",
+                "consumes": [
+                    "application/json"
+                ],
+                "summary": "レビュー詳細情報の取得",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/outputport.ReviewDetail"
                         }
                     }
                 }
@@ -174,6 +294,27 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/outputport.Review"
                         }
+                    }
+                }
+            },
+            "delete": {
+                "description": "レビューの削除",
+                "consumes": [
+                    "application/json"
+                ],
+                "summary": "レビューの削除",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": ""
                     }
                 }
             }
@@ -300,6 +441,53 @@ var doc = `{
                 }
             }
         },
+        "entity.Review": {
+            "type": "object",
+            "properties": {
+                "bookID": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "createDate": {
+                    "type": "string"
+                },
+                "createUserID": {
+                    "type": "integer"
+                },
+                "deleteDate": {
+                    "type": "string"
+                },
+                "deleteFlag": {
+                    "type": "integer"
+                },
+                "deleteUserID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "readingDate": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updateDate": {
+                    "type": "string"
+                },
+                "updateUserID": {
+                    "type": "integer"
+                },
+                "userID": {
+                    "type": "integer"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
         "outputport.BookDetail": {
             "type": "object",
             "properties": {
@@ -349,6 +537,32 @@ var doc = `{
         "outputport.Review": {
             "type": "object",
             "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "reading_date": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string"
+                }
+            }
+        },
+        "outputport.ReviewDetail": {
+            "type": "object",
+            "properties": {
+                "comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/outputport.Comment"
+                    }
+                },
                 "content": {
                     "type": "string"
                 },

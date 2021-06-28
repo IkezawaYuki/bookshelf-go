@@ -97,7 +97,7 @@ func (ctr *BookshelfController) GetBook(c outputport.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, book)
+	return c.JSON(http.StatusOK, ctr.presenter.ConvertBook(book))
 }
 
 // CreateBook 本の登録
@@ -329,6 +329,14 @@ func (ctr *BookshelfController) GetReview(c outputport.Context) error {
 	return c.JSON(http.StatusOK, ctr.presenter.ConvertReview(review))
 }
 
+// ShowReview レビュー詳細情報の取得
+// @Title ShowReview
+// @Summary レビュー詳細情報の取得
+// @Description レビュー詳細情報の取得
+// @Accept json
+// @Param id path int true "id"
+// @Success 200 {object} outputport.ReviewDetail
+// @Router /review/detail/{id} [get]
 func (ctr *BookshelfController) ShowReview(c outputport.Context) error {
 	reviewID := c.Param("id")
 	id, err := strconv.Atoi(reviewID)
@@ -363,7 +371,7 @@ func (ctr *BookshelfController) GetReviews(c outputport.Context) error {
 // @Accept json
 // @Produce json
 // @Success 200 {object} entity.Review
-// @Router /review [post]
+// @Router /review [patch]
 func (ctr *BookshelfController) UpdateReview(c outputport.Context) error {
 	var review entity.Review
 	err := c.Bind(review)
@@ -379,9 +387,17 @@ func (ctr *BookshelfController) UpdateReview(c outputport.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, review)
+	return c.JSON(http.StatusOK, ctr.presenter.ConvertReview(&review))
 }
 
+// CreateReview レビューの登録
+// @Title CreateReview
+// @Summary レビューの登録
+// @Description レビューの登録
+// @Accept json
+// @Produce json
+// @Success 200 {object} outputport.Review
+// @Router /review [post]
 func (ctr *BookshelfController) CreateReview(c outputport.Context) error {
 	var review entity.Review
 	err := c.Bind(review)
@@ -398,7 +414,7 @@ func (ctr *BookshelfController) CreateReview(c outputport.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusCreated, insReview)
+	return c.JSON(http.StatusCreated, ctr.presenter.ConvertReview(insReview))
 }
 
 // DeleteReview レビューの登録
@@ -456,6 +472,14 @@ func (ctr *BookshelfController) GetComments(c outputport.Context) error {
 	panic("implement me")
 }
 
+// CreateComment コメントの登録
+// @Title CreateComment
+// @Summary コメントの登録
+// @Description コメントの登録
+// @Accept json
+// @Produce json
+// @Success 200 {object} outputport.Comment
+// @Router /comment [post]
 func (ctr *BookshelfController) CreateComment(c outputport.Context) error {
 	var comment entity.Comment
 	if err := c.Bind(comment); err != nil {
@@ -470,9 +494,17 @@ func (ctr *BookshelfController) CreateComment(c outputport.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, insComment)
+	return c.JSON(http.StatusOK, ctr.presenter.ConvertComment(insComment))
 }
 
+// UpdateComment コメントの更新
+// @Title UpdateComment
+// @Summary コメントの更新
+// @Description コメントの更新
+// @Accept json
+// @Produce json
+// @Success 200
+// @Router /comment [patch]
 func (ctr *BookshelfController) UpdateComment(c outputport.Context) error {
 	var comment entity.Comment
 	if err := c.Bind(comment); err != nil {
