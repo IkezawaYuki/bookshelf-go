@@ -15,7 +15,11 @@ type commentRepository struct {
 }
 
 func (b *commentRepository) getFindAllCommentQuery() string {
-	return `select id, review_id, content from comments where delete_flag = 0`
+	return `select c.id, c.review_id, c.content, u.id, u.name
+from comments as c
+left join users as u
+on c.create_user_id = u.id
+where c.delete_flag = 0`
 }
 
 func (b *commentRepository) FindAllComment() (entity.Comments, error) {
@@ -34,6 +38,8 @@ func (b *commentRepository) FindAllComment() (entity.Comments, error) {
 			&comment.ID,
 			&comment.ReviewID,
 			&comment.Content,
+			&comment.UserID,
+			&comment.UserName,
 		); err != nil {
 			return nil, err
 		}
@@ -43,7 +49,11 @@ func (b *commentRepository) FindAllComment() (entity.Comments, error) {
 }
 
 func (b *commentRepository) getFindCommentByIDQuery() string {
-	return `select id, review_id, content from comments where id = ? and delete_flag = 0`
+	return `select c.id, c.review_id, c.content, u.id, u.name
+from comments as c
+left join users as u
+on c.create_user_id = u.id
+where c.id = ? c.delete_flag = 0`
 }
 
 func (b *commentRepository) FindCommentByID(id int) (*entity.Comment, error) {
@@ -54,6 +64,8 @@ func (b *commentRepository) FindCommentByID(id int) (*entity.Comment, error) {
 		&comment.ID,
 		&comment.ReviewID,
 		&comment.Content,
+		&comment.UserID,
+		&comment.UserName,
 	)
 	return &comment, err
 }
@@ -123,7 +135,11 @@ func (b *commentRepository) DeleteCommentByID(userID int, id int) error {
 }
 
 func (b *commentRepository) getFindCommentByReviewID() string {
-	return `select id, review_id, content from comments where delete_flag = 0 and review_id = ?`
+	return `select c.id, c.review_id, c.content, u.id, u.name
+from comments as c
+left join users as u
+on c.create_user_id = u.id
+where c.delete_flag = 0 and c.review_id = ?`
 }
 
 func (b *commentRepository) FindCommentByReviewID(reviewID int) (entity.Comments, error) {
@@ -142,6 +158,8 @@ func (b *commentRepository) FindCommentByReviewID(reviewID int) (entity.Comments
 			&comment.ID,
 			&comment.ReviewID,
 			&comment.Content,
+			&comment.UserID,
+			&comment.UserName,
 		); err != nil {
 			return nil, err
 		}
