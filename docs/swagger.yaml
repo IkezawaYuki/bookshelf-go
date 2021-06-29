@@ -60,6 +60,21 @@ definitions:
       userName:
         type: string
     type: object
+  outputport.Book:
+    properties:
+      author:
+        type: string
+      date_of_issue:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      publisher:
+        type: string
+    type: object
   outputport.BookDetail:
     properties:
       author:
@@ -206,6 +221,35 @@ paths:
           schema:
             $ref: '#/definitions/outputport.BookDetail'
       summary: 本の詳細情報の取得
+  /books:
+    get:
+      consumes:
+      - application/json
+      description: 本の取得
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ページ
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: 検索文字
+        in: query
+        name: search
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/outputport.Book'
+            type: array
+      summary: 本の取得
   /comment:
     patch:
       consumes:

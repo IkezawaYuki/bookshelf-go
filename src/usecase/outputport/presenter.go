@@ -12,6 +12,7 @@ type Presenter interface {
 	ConvertUser(user *entity.User) *User
 	ConvertUsers(user entity.Users) Users
 	ConvertReview(review *entity.Review) *Review
+	ConvertReviews(reviews entity.Reviews) Reviews
 	ConvertReviewDetail(review *entity.Review, comments entity.Comments) *ReviewDetail
 	ConvertComment(comment *entity.Comment) *Comment
 }
@@ -88,11 +89,19 @@ func (p *presenter) ConvertUsers(users entity.Users) Users {
 	return result
 }
 
+func (p *presenter) ConvertReviews(reviews entity.Reviews) Reviews {
+	var result Reviews
+	for _, r := range reviews {
+		result = append(result, p.ConvertReview(r))
+	}
+	return result
+}
+
 func (p *presenter) ConvertReview(review *entity.Review) *Review {
 	return &Review{
 		ID:          review.ID,
 		Title:       review.Title,
-		User:        "todo",
+		User:        review.UserName,
 		Content:     review.Content,
 		ReadingDate: review.ReadingDate.Format("2006-01-02"),
 	}
@@ -131,6 +140,8 @@ type BookDetail struct {
 	Price       float64  `json:"price"`
 	Reviews     []Review `json:"reviews"`
 }
+
+type Reviews []*Review
 
 type Review struct {
 	ID          int    `json:"id"`

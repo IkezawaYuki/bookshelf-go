@@ -53,6 +53,16 @@ func (ctr *BookshelfController) GetVersion(c outputport.Context) error {
 	return c.JSON(http.StatusOK, "0.0.0")
 }
 
+// GetBooks 本の取得
+// @Title GetBooks
+// @Summary 本の取得
+// @Description 本の取得
+// @Accept json
+// @Param id path int true "id"
+// @Param page query string true "ページ"
+// @Param search query string true "検索文字"
+// @Success 200 {object} outputport.Books
+// @Router /books [get]
 func (ctr *BookshelfController) GetBooks(c outputport.Context) error {
 	queryPage := c.QueryParam("page")
 	page := 1
@@ -106,7 +116,7 @@ func (ctr *BookshelfController) GetBook(c outputport.Context) error {
 // @Description 本の登録
 // @Accept json
 // @Produce json
-// @Success 200 {object} entity.Book
+// @Success 200 {object} int
 // @Router /book [post]
 func (ctr *BookshelfController) CreateBook(c outputport.Context) error {
 	var book entity.Book
@@ -123,7 +133,7 @@ func (ctr *BookshelfController) CreateBook(c outputport.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusCreated, insBook)
+	return c.JSON(http.StatusCreated, insBook.ID)
 }
 
 // UpdateBook 本の登録
@@ -148,7 +158,7 @@ func (ctr *BookshelfController) UpdateBook(c outputport.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusAccepted, nil)
+	return c.JSON(http.StatusAccepted, ctr.presenter.ConvertBook(&book))
 }
 
 // DeleteBook 本の登録
@@ -190,7 +200,7 @@ func (ctr *BookshelfController) FindReviews(c outputport.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, reviews)
+	return c.JSON(http.StatusOK, ctr.presenter.ConvertReviews(reviews))
 }
 
 func (ctr *BookshelfController) BookIndex(c outputport.Context) error {

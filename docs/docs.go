@@ -120,6 +120,49 @@ var doc = `{
                 }
             }
         },
+        "/books": {
+            "get": {
+                "description": "本の取得",
+                "consumes": [
+                    "application/json"
+                ],
+                "summary": "本の取得",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ページ",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "検索文字",
+                        "name": "search",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/outputport.Book"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/comment": {
             "post": {
                 "description": "コメントの登録",
@@ -484,6 +527,29 @@ var doc = `{
                     "type": "integer"
                 },
                 "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "outputport.Book": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "date_of_issue": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "publisher": {
                     "type": "string"
                 }
             }
