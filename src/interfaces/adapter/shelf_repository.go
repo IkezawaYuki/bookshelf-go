@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
+	"github.com/IkezawaYuki/bookshelf-go/src/domain/model"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/repository"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
 )
@@ -35,7 +36,11 @@ func (r *shelfRepository) FindAllShelf() (entity.Shelves, error) {
 			&shelf.OwnerID,
 			&shelf.Name,
 		); err != nil {
-			return nil, err
+			return nil, &model.BsError{
+				Code: model.EINTERNAL,
+				Op:   "rows.Scan",
+				Err:  err,
+			}
 		}
 		result = append(result, &shelf)
 	}
@@ -50,12 +55,18 @@ func (r *shelfRepository) FindShelfByID(id int) (*entity.Shelf, error) {
 	query := r.getFindShelfByIDQuery()
 	row := r.handler.QueryRow(query, id)
 	var shelf entity.Shelf
-	err := row.Scan(
+	if err := row.Scan(
 		&shelf.ID,
 		&shelf.OwnerID,
 		&shelf.Name,
-	)
-	return &shelf, err
+	); err != nil {
+		return nil, &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   "rows.Scan",
+			Err:  err,
+		}
+	}
+	return &shelf, nil
 }
 
 func (r *shelfRepository) getCreateShelfQuery() string {

@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
+	"github.com/IkezawaYuki/bookshelf-go/src/domain/model"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/repository"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
 )
@@ -48,7 +49,11 @@ func (r *reviewRepository) FindAllReview() (entity.Reviews, error) {
 			&review.Content,
 			&review.ReadingDate,
 		); err != nil {
-			return nil, err
+			return nil, &model.BsError{
+				Code: model.EINTERNAL,
+				Op:   "rows.Scan",
+				Err:  err,
+			}
 		}
 		result = append(result, &review)
 	}
@@ -194,7 +199,11 @@ func (r *reviewRepository) FindReviewByBookID(id int) (entity.Reviews, error) {
 			&review.Content,
 			&review.ReadingDate,
 		); err != nil {
-			return nil, err
+			return nil, &model.BsError{
+				Code: model.EINTERNAL,
+				Op:   "rows.Scan",
+				Err:  err,
+			}
 		}
 		result = append(result, &review)
 	}

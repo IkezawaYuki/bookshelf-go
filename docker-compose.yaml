@@ -1,0 +1,12 @@
+version: "3"
+services:
+  bookshelf:
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file:
+      - ./.env
+    environment:
+      - CLIENT_ID=$CLIENT_ID
+      - 
