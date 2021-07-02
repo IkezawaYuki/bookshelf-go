@@ -1,7 +1,7 @@
 .PHONY: run clean build
 
 run:
-	docker-compose up -d bookshelf
+	docker-compose up -d redis bookshelf
 
 build:
 	docker-compose build --no-cache
