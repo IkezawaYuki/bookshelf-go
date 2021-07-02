@@ -3,8 +3,10 @@ package adapter
 import (
 	"fmt"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
+	"github.com/IkezawaYuki/bookshelf-go/src/domain/model"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/repository"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
+	"github.com/IkezawaYuki/bookshelf-go/src/logger"
 	"strings"
 )
 
@@ -29,6 +31,7 @@ LIMIT 20 OFFSET ?`
 }
 
 func (b *bookRepository) FindAllBook(page int, search string) (entity.Books, error) {
+	logger.Info(model.GetMethodName())
 	result := make(entity.Books, 0)
 	query := b.getFindAllBookQuery()
 	if search == "" {
@@ -39,7 +42,11 @@ func (b *bookRepository) FindAllBook(page int, search string) (entity.Books, err
 
 	rows, err := b.handler.Query(query, (page-1)*20)
 	if err != nil {
-		return nil, err
+		return nil, &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   query + ":" + fmt.Sprintf("%d", (page-1)*20),
+			Err:  err,
+		}
 	}
 	defer func() {
 		_ = rows.Close()
@@ -54,7 +61,11 @@ func (b *bookRepository) FindAllBook(page int, search string) (entity.Books, err
 			&book.DateOfIssue,
 			&book.Price,
 		); err != nil {
-			return nil, err
+			return nil, &model.BsError{
+				Code: model.EINTERNAL,
+				Op:   "rows.Scan",
+				Err:  err,
+			}
 		}
 		result = append(result, &book)
 	}
@@ -84,7 +95,11 @@ func (b *bookRepository) FindBookByID(id int) (*entity.Book, error) {
 		&book.DateOfIssue,
 		&book.Price,
 	); err != nil {
-		return nil, err
+		return nil, &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   "rows.Scan",
+			Err:  err,
+		}
 	}
 	return &book, nil
 }
@@ -105,11 +120,19 @@ func (b *bookRepository) CreateBook(userID int, book entity.Book) (*entity.Book,
 		userID,
 	)
 	if err != nil {
-		return nil, err
+		return nil, &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   "b.handler.Exec",
+			Err:  err,
+		}
 	}
 	insID, err := result.LastInsertId()
 	if err != nil {
-		return nil, err
+		return nil, &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   "result.LastInsertId",
+			Err:  err,
+		}
 	}
 	book.ID = int(insID)
 	return &book, nil
@@ -138,7 +161,11 @@ func (b *bookRepository) UpdateBook(userID int, book entity.Book) error {
 		book.ID,
 	)
 	if err != nil {
-		return err
+		return &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   "b.handler.Exec",
+			Err:  err,
+		}
 	}
 	return nil
 }
@@ -158,7 +185,11 @@ func (b *bookRepository) DeleteBookByID(userID int, id int) error {
 		id,
 	)
 	if err != nil {
-		return err
+		return &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   "b.handler.Exec",
+			Err:  err,
+		}
 	}
 	return nil
 }
@@ -180,7 +211,11 @@ func (b *bookRepository) FindByName(name string) (entity.Books, error) {
 	query := strings.ReplaceAll(b.getFindByNameQuery(), "$word", name)
 	rows, err := b.handler.Query(query)
 	if err != nil {
-		return nil, err
+		return nil, &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   "b.handler.Query",
+			Err:  err,
+		}
 	}
 	defer func() {
 		_ = rows.Close()
@@ -195,7 +230,11 @@ func (b *bookRepository) FindByName(name string) (entity.Books, error) {
 			&book.DateOfIssue,
 			&book.Price,
 		); err != nil {
-			return nil, err
+			return nil, &model.BsError{
+				Code: model.EINTERNAL,
+				Op:   "rows.Scan",
+				Err:  err,
+			}
 		}
 		result = append(result, &book)
 	}

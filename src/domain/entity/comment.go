@@ -6,6 +6,7 @@ type Comment struct {
 	ID       int
 	ReviewID int
 	UserID   int
+	UserName string
 	Content  string
 	Model
 }

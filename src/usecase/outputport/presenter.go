@@ -12,6 +12,7 @@ type Presenter interface {
 	ConvertUser(user *entity.User) *User
 	ConvertUsers(user entity.Users) Users
 	ConvertReview(review *entity.Review) *Review
+	ConvertReviews(reviews entity.Reviews) Reviews
 	ConvertReviewDetail(review *entity.Review, comments entity.Comments) *ReviewDetail
 	ConvertComment(comment *entity.Comment) *Comment
 }
@@ -88,25 +89,47 @@ func (p *presenter) ConvertUsers(users entity.Users) Users {
 	return result
 }
 
+func (p *presenter) ConvertReviews(reviews entity.Reviews) Reviews {
+	var result Reviews
+	for _, r := range reviews {
+		result = append(result, p.ConvertReview(r))
+	}
+	return result
+}
+
 func (p *presenter) ConvertReview(review *entity.Review) *Review {
 	return &Review{
 		ID:          review.ID,
 		Title:       review.Title,
-		User:        "todo",
+		User:        review.UserName,
 		Content:     review.Content,
 		ReadingDate: review.ReadingDate.Format("2006-01-02"),
 	}
 }
 
 func (p *presenter) ConvertReviewDetail(review *entity.Review, comments entity.Comments) *ReviewDetail {
-	panic("implement me")
+	var result ReviewDetail
+	for _, c := range comments {
+		result.Comments = append(result.Comments, Comment{
+			ID:       c.ID,
+			ReviewID: c.ReviewID,
+			User:     "todo",
+			Content:  c.Content,
+		})
+	}
+	result.ID = review.ID
+	result.Title = review.Title
+	result.Content = review.Content
+	result.User = review.UserName
+	result.ReadingDate = review.ReadingDate.Format("2006-01-02")
+	return &result
 }
 
 func (p *presenter) ConvertComment(comment *entity.Comment) *Comment {
 	return &Comment{
 		ID:       comment.ID,
 		ReviewID: comment.ReviewID,
-		UserID:   comment.UserID,
+		User:     "todo",
 		Content:  comment.Content,
 	}
 }
@@ -131,6 +154,8 @@ type BookDetail struct {
 	Price       float64  `json:"price"`
 	Reviews     []Review `json:"reviews"`
 }
+
+type Reviews []*Review
 
 type Review struct {
 	ID          int    `json:"id"`
@@ -175,6 +200,6 @@ type ReviewDetail struct {
 type Comment struct {
 	ID       int    `json:"id"`
 	ReviewID int    `json:"review_id"`
-	UserID   int    `json:"user_id"`
+	User     string `json:"user"`
 	Content  string `json:"content"`
 }

@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
+	"github.com/IkezawaYuki/bookshelf-go/src/domain/model"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/repository"
 	"github.com/IkezawaYuki/bookshelf-go/src/interfaces/datastore"
 )
@@ -15,7 +16,11 @@ type commentRepository struct {
 }
 
 func (b *commentRepository) getFindAllCommentQuery() string {
-	return `select id, review_id, content from comments where delete_flag = 0`
+	return `select c.id, c.review_id, c.content, u.id, u.name
+from comments as c
+left join users as u
+on c.create_user_id = u.id
+where c.delete_flag = 0`
 }
 
 func (b *commentRepository) FindAllComment() (entity.Comments, error) {
@@ -23,7 +28,11 @@ func (b *commentRepository) FindAllComment() (entity.Comments, error) {
 	query := b.getFindAllCommentQuery()
 	rows, err := b.handler.Query(query)
 	if err != nil {
-		return nil, err
+		return nil, &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   "b.handler.Query",
+			Err:  err,
+		}
 	}
 	defer func() {
 		_ = rows.Close()
@@ -34,8 +43,14 @@ func (b *commentRepository) FindAllComment() (entity.Comments, error) {
 			&comment.ID,
 			&comment.ReviewID,
 			&comment.Content,
+			&comment.UserID,
+			&comment.UserName,
 		); err != nil {
-			return nil, err
+			return nil, &model.BsError{
+				Code: model.EINTERNAL,
+				Op:   "row.Scan",
+				Err:  err,
+			}
 		}
 		result = append(result, &comment)
 	}
@@ -43,19 +58,31 @@ func (b *commentRepository) FindAllComment() (entity.Comments, error) {
 }
 
 func (b *commentRepository) getFindCommentByIDQuery() string {
-	return `select id, review_id, content from comments where id = ? and delete_flag = 0`
+	return `select c.id, c.review_id, c.content, u.id, u.name
+from comments as c
+left join users as u
+on c.create_user_id = u.id
+where c.id = ? c.delete_flag = 0`
 }
 
 func (b *commentRepository) FindCommentByID(id int) (*entity.Comment, error) {
 	query := b.getFindCommentByIDQuery()
 	row := b.handler.QueryRow(query, id)
 	var comment entity.Comment
-	err := row.Scan(
+	if err := row.Scan(
 		&comment.ID,
 		&comment.ReviewID,
 		&comment.Content,
-	)
-	return &comment, err
+		&comment.UserID,
+		&comment.UserName,
+	); err != nil {
+		return nil, &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   "row.Scan",
+			Err:  err,
+		}
+	}
+	return &comment, nil
 }
 
 func (b *commentRepository) getCreateCommentQuery() string {
@@ -70,11 +97,19 @@ func (b *commentRepository) CreateComment(userID int, comment entity.Comment) (*
 		userID,
 	)
 	if err != nil {
-		return nil, err
+		return nil, &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   "b.handler.Exec",
+			Err:  err,
+		}
 	}
 	insID, err := result.LastInsertId()
 	if err != nil {
-		return nil, err
+		return nil, &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   "result.LastInsertId",
+			Err:  err,
+		}
 	}
 	comment.ID = int(insID)
 	return &comment, nil
@@ -97,7 +132,11 @@ func (b *commentRepository) UpdateComment(userID int, comment entity.Comment) er
 		comment.ID,
 	)
 	if err != nil {
-		return err
+		return &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   "b.handler.Exec",
+			Err:  err,
+		}
 	}
 	return nil
 }
@@ -117,13 +156,21 @@ func (b *commentRepository) DeleteCommentByID(userID int, id int) error {
 		id,
 	)
 	if err != nil {
-		return err
+		return &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   "b.handler.Exec",
+			Err:  err,
+		}
 	}
 	return nil
 }
 
 func (b *commentRepository) getFindCommentByReviewID() string {
-	return `select id, review_id, content from comments where delete_flag = 0 and review_id = ?`
+	return `select c.id, c.review_id, c.content, u.id, u.name
+from comments as c
+left join users as u
+on c.create_user_id = u.id
+where c.delete_flag = 0 and c.review_id = ?`
 }
 
 func (b *commentRepository) FindCommentByReviewID(reviewID int) (entity.Comments, error) {
@@ -131,7 +178,11 @@ func (b *commentRepository) FindCommentByReviewID(reviewID int) (entity.Comments
 	query := b.getFindCommentByReviewID()
 	rows, err := b.handler.Query(query, reviewID)
 	if err != nil {
-		return nil, err
+		return nil, &model.BsError{
+			Code: model.EINTERNAL,
+			Op:   "b.handler.Query",
+			Err:  err,
+		}
 	}
 	defer func() {
 		_ = rows.Close()
@@ -142,8 +193,14 @@ func (b *commentRepository) FindCommentByReviewID(reviewID int) (entity.Comments
 			&comment.ID,
 			&comment.ReviewID,
 			&comment.Content,
+			&comment.UserID,
+			&comment.UserName,
 		); err != nil {
-			return nil, err
+			return nil, &model.BsError{
+				Code: model.EINTERNAL,
+				Op:   "rows.Scan",
+				Err:  err,
+			}
 		}
 		result = append(result, &comment)
 	}
