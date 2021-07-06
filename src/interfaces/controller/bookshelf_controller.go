@@ -187,7 +187,7 @@ func (ctr *BookshelfController) DeleteBook(c outputport.Context) error {
 }
 
 func (ctr *BookshelfController) FindReviews(c outputport.Context) error {
-	bookID := c.QueryParam("book_id")
+	bookID := c.Param("book_id")
 	id, err := strconv.Atoi(bookID)
 	if err != nil {
 		_ = c.JSON(http.StatusBadRequest, fmt.Errorf("param=%s, %v", bookID, err).Error())
@@ -371,7 +371,11 @@ func (ctr *BookshelfController) ShowReview(c outputport.Context) error {
 }
 
 func (ctr *BookshelfController) GetReviews(c outputport.Context) error {
-	panic("implement me")
+	search := c.QueryParam("search")
+
+	page := c.QueryParam("page")
+
+	ctr.reviewInputport.FindAllReview()
 }
 
 // UpdateReview レビューの登録
@@ -479,7 +483,19 @@ func (ctr *BookshelfController) GetComment(c outputport.Context) error {
 }
 
 func (ctr *BookshelfController) GetComments(c outputport.Context) error {
-	panic("implement me")
+	queryPage := c.QueryParam("page")
+	page := 1
+	if queryPage != "" {
+		page, _ = strconv.Atoi(queryPage)
+	}
+	search := c.QueryParam("search")
+	comments, err := ctr.commentInputport.FindAllComment(page, search)
+	if err != nil {
+		_ = c.JSON(http.StatusInternalServerError, err)
+		return err
+	}
+
+	ctr.presenter.ConvertComment()
 }
 
 // CreateComment コメントの登録

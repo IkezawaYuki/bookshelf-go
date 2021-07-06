@@ -16,8 +16,8 @@ func NewCommentInteractor(repo repository.CommentRepository) inputport.CommentIn
 	}
 }
 
-func (c *commentInteractor) FindAllComment() (entity.Comments, error) {
-	return c.commentRepo.FindAllComment()
+func (c *commentInteractor) FindAllComment(page int, search string) (entity.Comments, error) {
+	return c.commentRepo.FindAllComment(page, search)
 }
 
 func (c *commentInteractor) FindCommentByID(id int) (*entity.Comment, error) {

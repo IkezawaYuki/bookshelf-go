@@ -15,6 +15,7 @@ type Presenter interface {
 	ConvertReviews(reviews entity.Reviews) Reviews
 	ConvertReviewDetail(review *entity.Review, comments entity.Comments) *ReviewDetail
 	ConvertComment(comment *entity.Comment) *Comment
+	ConvertComments(comment entity.Comments) Comments
 }
 
 func NewPresenter() Presenter {
@@ -134,6 +135,14 @@ func (p *presenter) ConvertComment(comment *entity.Comment) *Comment {
 	}
 }
 
+func (p *presenter) ConvertComments(comments entity.Comments) Comments {
+	var result Comments
+	for _, c := range comments {
+		result = append(result, p.ConvertComment(c))
+	}
+	return result
+}
+
 type Books []Book
 
 type Book struct {
@@ -196,6 +205,8 @@ type ReviewDetail struct {
 	ReadingDate string    `json:"reading_date"`
 	Comments    []Comment `json:"comments"`
 }
+
+type Comments []*Comment
 
 type Comment struct {
 	ID       int    `json:"id"`

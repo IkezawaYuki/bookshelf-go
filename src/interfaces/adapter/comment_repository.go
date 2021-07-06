@@ -1,6 +1,7 @@
 package adapter
 
 import (
+	"fmt"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/model"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/repository"
@@ -20,13 +21,20 @@ func (b *commentRepository) getFindAllCommentQuery() string {
 from comments as c
 left join users as u
 on c.create_user_id = u.id
-where c.delete_flag = 0`
+where c.delete_flag = 0 %s
+LIMIT 20 OFFSET ?`
 }
 
-func (b *commentRepository) FindAllComment() (entity.Comments, error) {
+func (b *commentRepository) FindAllComment(page int, search string) (entity.Comments, error) {
 	result := make(entity.Comments, 0)
 	query := b.getFindAllCommentQuery()
-	rows, err := b.handler.Query(query)
+	if search == "" {
+		query = fmt.Sprintf(query, "")
+	} else {
+		query = fmt.Sprintf(query, "AND name like '%"+search+"%'")
+	}
+
+	rows, err := b.handler.Query(query, (page-1)*20)
 	if err != nil {
 		return nil, &model.BsError{
 			Code: model.EINTERNAL,
