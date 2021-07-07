@@ -114,7 +114,7 @@ func (p *presenter) ConvertReviewDetail(review *entity.Review, comments entity.C
 		result.Comments = append(result.Comments, Comment{
 			ID:       c.ID,
 			ReviewID: c.ReviewID,
-			User:     "todo",
+			User:     c.UserName,
 			Content:  c.Content,
 		})
 	}
@@ -130,7 +130,7 @@ func (p *presenter) ConvertComment(comment *entity.Comment) *Comment {
 	return &Comment{
 		ID:       comment.ID,
 		ReviewID: comment.ReviewID,
-		User:     "todo",
+		User:     comment.UserName,
 		Content:  comment.Content,
 	}
 }

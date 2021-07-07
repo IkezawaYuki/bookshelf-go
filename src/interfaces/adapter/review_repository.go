@@ -1,6 +1,7 @@
 package adapter
 
 import (
+	"fmt"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/entity"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/model"
 	"github.com/IkezawaYuki/bookshelf-go/src/domain/repository"
@@ -30,10 +31,16 @@ on r.create_user_id = u.id
 order by r.id`
 }
 
-func (r *reviewRepository) FindAllReview() (entity.Reviews, error) {
+func (r *reviewRepository) FindAllReview(page int, search string) (entity.Reviews, error) {
 	result := make(entity.Reviews, 0)
 	query := r.getFindAllReviewQuery()
-	rows, err := r.handler.Query(query)
+	if search == "" {
+		query = fmt.Sprintf(query, "")
+	} else {
+		query = fmt.Sprintf(query, "AND name like '%"+search+"%'")
+	}
+
+	rows, err := r.handler.Query(query, (page-1)*20)
 	if err != nil {
 		return nil, err
 	}

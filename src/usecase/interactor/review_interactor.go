@@ -16,8 +16,8 @@ func NewReviewInteractor(repo repository.ReviewRepository) inputport.ReviewInput
 	}
 }
 
-func (r *reviewInteractor) FindAllReview() (entity.Reviews, error) {
-	return r.reviewRepo.FindAllReview()
+func (r *reviewInteractor) FindAllReview(page int, search string) (entity.Reviews, error) {
+	return r.reviewRepo.FindAllReview(page, search)
 }
 
 func (r *reviewInteractor) FindReviewByID(id int) (*entity.Review, error) {
